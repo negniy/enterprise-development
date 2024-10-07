@@ -37,20 +37,20 @@ StudyYear - Год обучения
 ### GradesTypes - возможные оценки
 
 ## Тесты:
-###GetAllSubjectsTest
+### GetAllSubjectsTest
 Тест проверяет, что в списке оценок (GradesList) содержатся все ожидаемые предметы, такие как "Biology", "Literature", "Math" и другие.
 
-###GetStudentsByClassOrderedByFioTest
+### GetStudentsByClassOrderedByFioTest
 Тест проверяет, что список студентов, относящихся к классу с идентификатором IdClass = 5, отсортирован по фамилии, имени и отчеству (ФИО) в правильном порядке.
 
-###GetStudentsWithGradesOnSpecificDayTest
+### GetStudentsWithGradesOnSpecificDayTest
 Тест проверяет, что в списке студентов, получивших оценку на определённую дату (30 сентября 2023 года), содержится студент с фамилией "Mikhailov" и именем "Vladimir".
 
-###GetTop5StudentsByAverageGradeTest
+### GetTop5StudentsByAverageGradeTest
 Тест проверяет, что список топ-5 студентов с наивысшими средними баллами отсортирован по средней оценке, а также по фамилии, имени и отчеству, и содержит ожидаемые значения.
 
-###GetStudentsWithMaxAverageGradeForPeriodTest
+### GetStudentsWithMaxAverageGradeForPeriodTest
 Тест проверяет, что среди студентов с наивысшей средней оценкой за определённый период времени (с 1 сентября 2023 года по 31 октября 2023 года) есть студент с фамилией "Mikhailov" и именем "Vladimir".
 
-###GetGradeStatisticsBySubjectTest
+### GetGradeStatisticsBySubjectTest
 Тест проверяет минимальный, максимальный и средний балл по каждому предмету из списка оценок, проверяя, что у предметов с IdSubject = 1 минимальная оценка — 3, максимальная — 5, а для предмета с IdSubject = 9 средний балл находится в диапазоне от 3.74 до 3.76.
