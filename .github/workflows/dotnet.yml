@@ -21,11 +21,11 @@ jobs:
 
       # Восстановление зависимостей
       - name: Restore dependencies
-        run: dotnet restore ./ElectronicDiary.sln
+        run: dotnet restore ./ElectronicDiary/ElectronicDiary.sln
 
       # Сборка проекта
       - name: Build
-        run: dotnet build ./ElectronicDiary.sln --configuration Release
+        run: dotnet build ./ElectronicDiary/ElectronicDiary.sln --configuration Release
 
       # Запуск тестов
       - name: Run tests
