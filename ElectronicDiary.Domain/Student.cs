@@ -21,13 +21,13 @@ public class Student
     /// <summary>
     /// Идентификатор класса
     /// </summary>
-    public required Class IdClass { get; set; }
+    public required Class Class { get; set; }
     /// <summary>
     /// Дата рождения
     /// </summary>
     public required DateOnly Birthday { get; set; }
     /// <summary>
-    /// Дата рождения
+    /// Пасспорт
     /// </summary>
     public required string Passport { get; set; }
 }

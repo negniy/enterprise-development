@@ -17,19 +17,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ElectronicDiary\ElectronicDiary.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Date\" />
+    <Folder Include="Data\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Date\data.csv">
+    <ProjectReference Include="..\ElectronicDiary.Domain\ElectronicDiary.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\data.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

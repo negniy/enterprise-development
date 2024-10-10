@@ -1,4 +1,4 @@
-using ElectronicDiary.Domain;
+п»їusing ElectronicDiary.Domain;
 
 namespace ElectronicDiary.Tests;
 
@@ -7,14 +7,14 @@ public class ElectronicDiaryTests(ElectronicDiaryFixture fixture) : IClassFixtur
     private readonly ElectronicDiaryFixture _fixture = fixture;
 
     /// <summary>
-    /// Тест проверяет, что в списке предметов содержатся все ожидаемые предметы,
-    /// такие как Biology, Literature, Math и другие.
+    /// РўРµСЃС‚ РїСЂРѕРІРµСЂСЏРµС‚, С‡С‚Рѕ РІ СЃРїРёСЃРєРµ РїСЂРµРґРјРµС‚РѕРІ СЃРѕРґРµСЂР¶Р°С‚СЃСЏ РІСЃРµ РѕР¶РёРґР°РµРјС‹Рµ РїСЂРµРґРјРµС‚С‹,
+    /// С‚Р°РєРёРµ РєР°Рє Biology, Literature, Math Рё РґСЂСѓРіРёРµ.
     /// </summary>
     [Fact]
     public void GetAllSubjectsTest()
     {
         var subjects = _fixture.GradesList
-            .Select(g => g.IdSubject).ToList();
+            .Select(g => g.Subject).ToList();
 
         Assert.Contains(subjects, s => s.Name == "Biology");
         Assert.Contains(subjects, s => s.Name == "Literature");
@@ -29,8 +29,8 @@ public class ElectronicDiaryTests(ElectronicDiaryFixture fixture) : IClassFixtur
     }
 
     /// <summary>
-    /// Тест проверяет, что список учеников, относящихся к определенному классу (с ID 5),
-    /// отсортирован по ФИО в правильном порядке.
+    /// РўРµСЃС‚ РїСЂРѕРІРµСЂСЏРµС‚, С‡С‚Рѕ СЃРїРёСЃРѕРє СѓС‡РµРЅРёРєРѕРІ, РѕС‚РЅРѕСЃСЏС‰РёС…СЃСЏ Рє РѕРїСЂРµРґРµР»РµРЅРЅРѕРјСѓ РєР»Р°СЃСЃСѓ (СЃ ID 5),
+    /// РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅ РїРѕ Р¤РРћ РІ РїСЂР°РІРёР»СЊРЅРѕРј РїРѕСЂСЏРґРєРµ.
     /// </summary>
     [Fact]
     public void GetStudentsByClassOrderedByFioTest()
@@ -38,58 +38,59 @@ public class ElectronicDiaryTests(ElectronicDiaryFixture fixture) : IClassFixtur
         var classId = 5;
 
         var students = _fixture.GradesList
-            .Select(g => g.IdStudent)
-            .Where(s => s.IdClass.IdClass == classId)
+            .Select(g => g.Student)
+            .Where(s => s.Class.Id == classId)
             .OrderBy(s => s.Surname)
             .ThenBy(s => s.Name)
             .ThenBy(s => s.Patronymic)
             .ToList();
 
+        Assert.Equal(3, students.Count);
         Assert.Equal("Mikhailov Igor Vladimirovich", $"{students[0].Surname} {students[0].Name} {students[0].Patronymic}");
         Assert.Equal("Petrov Anton Dmitrievich", $"{students[1].Surname} {students[1].Name} {students[1].Patronymic}");
         Assert.Equal("Sidorov Sergey Antonovich", $"{students[2].Surname} {students[2].Name} {students[2].Patronymic}");
     }
 
     /// <summary>
-    /// Тест проверяет, что в списке учеников, получивших оценку на определенную дату (30 сентября 2023 года),
-    /// содержится ученик с фамилией Mikhailov и именем Vladimir.
+    /// РўРµСЃС‚ РїСЂРѕРІРµСЂСЏРµС‚, С‡С‚Рѕ РІ СЃРїРёСЃРєРµ СѓС‡РµРЅРёРєРѕРІ, РїРѕР»СѓС‡РёРІС€РёС… РѕС†РµРЅРєСѓ РЅР° РѕРїСЂРµРґРµР»РµРЅРЅСѓСЋ РґР°С‚Сѓ (30 СЃРµРЅС‚СЏР±СЂСЏ 2023 РіРѕРґР°),
+    /// СЃРѕРґРµСЂР¶РёС‚СЃСЏ СѓС‡РµРЅРёРє СЃ С„Р°РјРёР»РёРµР№ Mikhailov Рё РёРјРµРЅРµРј Vladimir.
     /// </summary>
     [Fact]
     public void GetStudentsWithGradesOnSpecificDayTest()
     {
-        var specificDate = DateOnly.Parse("2023-09-30");
+        var specificDate = new DateOnly(2023, 09, 30);
 
         var students = _fixture.GradesList
-        .Where(g => g.Date == specificDate)
-        .Select(g => g.IdStudent)
-        .Distinct()
-        .ToList();
+            .Where(g => g.Date == specificDate)
+            .Select(g => g.Student)
+            .Distinct()
+            .ToList();
 
         Assert.Contains(students, s => s.Surname == "Mikhailov" && s.Name == "Vladimir");
     }
 
     /// <summary>
-    /// Тест проверяет, что список топ-5 учеников с наивысшим средним баллом
-    /// отсортирован по средней оценке и ФИО, и содержит ожидаемые значения.
+    /// РўРµСЃС‚ РїСЂРѕРІРµСЂСЏРµС‚, С‡С‚Рѕ СЃРїРёСЃРѕРє С‚РѕРї-5 СѓС‡РµРЅРёРєРѕРІ СЃ РЅР°РёРІС‹СЃС€РёРј СЃСЂРµРґРЅРёРј Р±Р°Р»Р»РѕРј
+    /// РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅ РїРѕ СЃСЂРµРґРЅРµР№ РѕС†РµРЅРєРµ Рё Р¤РРћ, Рё СЃРѕРґРµСЂР¶РёС‚ РѕР¶РёРґР°РµРјС‹Рµ Р·РЅР°С‡РµРЅРёСЏ.
     /// </summary>
     [Fact]
     public void GetTop5StudentsByAverageGradeTest()
     {
         var topStudents = _fixture.GradesList
-        .GroupBy(g => g.IdStudent)
-        .Select(g => new
-        {
-            Student = g.Key,
-            AverageGrade = g.Average(gr => (int)gr.GradeValue)
-        })
-        .OrderByDescending(s => s.AverageGrade)
-        .ThenBy(s => s.Student.Surname) 
-        .ThenBy(s => s.Student.Name)
-        .ThenBy(s => s.Student.Patronymic)
-        .Take(5) 
-        .ToList();
+            .GroupBy(g => g.Student)
+            .Select(g => new
+            {
+                Student = g.Key,
+                AverageGrade = g.Average(gr => (int)gr.GradeValue)
+            })
+            .OrderByDescending(s => s.AverageGrade)
+            .ThenBy(s => s.Student.Surname) 
+            .ThenBy(s => s.Student.Name)
+            .ThenBy(s => s.Student.Patronymic)
+            .Take(5) 
+            .ToList();
 
-        
+        Assert.Equal(5, topStudents.Count);
         Assert.Equal("Fedorov Dmitry Sergeevich", $"{topStudents[0].Student.Surname} {topStudents[0].Student.Name} {topStudents[0].Student.Patronymic}");
         Assert.Equal("Kuznetsov Anton Antonovich", $"{topStudents[1].Student.Surname} {topStudents[1].Student.Name} {topStudents[1].Student.Patronymic}");
         Assert.Equal("Kuznetsov Semen Igorevich", $"{topStudents[2].Student.Surname} {topStudents[2].Student.Name} {topStudents[2].Student.Patronymic}");
@@ -98,24 +99,24 @@ public class ElectronicDiaryTests(ElectronicDiaryFixture fixture) : IClassFixtur
     }
 
     /// <summary>
-    /// Тест проверяет, что ученики с наивысшим средним баллом за определенный период
-    /// (с 1 сентября 2023 года по 31 декабря 2023 года) содержат ученика с фамилией Mikhailov.
+    /// РўРµСЃС‚ РїСЂРѕРІРµСЂСЏРµС‚, С‡С‚Рѕ СѓС‡РµРЅРёРєРё СЃ РЅР°РёРІС‹СЃС€РёРј СЃСЂРµРґРЅРёРј Р±Р°Р»Р»РѕРј Р·Р° РѕРїСЂРµРґРµР»РµРЅРЅС‹Р№ РїРµСЂРёРѕРґ
+    /// (СЃ 1 СЃРµРЅС‚СЏР±СЂСЏ 2023 РіРѕРґР° РїРѕ 31 РґРµРєР°Р±СЂСЏ 2023 РіРѕРґР°) СЃРѕРґРµСЂР¶Р°С‚ СѓС‡РµРЅРёРєР° СЃ С„Р°РјРёР»РёРµР№ Mikhailov.
     /// </summary>
     [Fact]
     public void GetStudentsWithMaxAverageGradeForPeriodTest()
     {
-        var startDate = DateOnly.Parse("2023-09-01");
-        var endDate = DateOnly.Parse("2023-10-01");
+        var startDate = new DateOnly(2023, 09, 01);
+        var endDate = new DateOnly(2023, 10, 01);
 
         var studentGrades = _fixture.GradesList
-        .Where(g => g.Date >= startDate && g.Date <= endDate)
-        .GroupBy(g => g.IdStudent)
-        .Select(g => new
-        {
-            Student = g.Key,
-            AverageGrade = g.Average(gr => (int)gr.GradeValue)
-        })
-        .ToList();
+            .Where(g => g.Date >= startDate && g.Date <= endDate)
+            .GroupBy(g => g.Student)
+            .Select(g => new
+            {
+                Student = g.Key,
+                AverageGrade = g.Average(gr => (int)gr.GradeValue)
+            })
+            .ToList();
 
         var maxAverageGrade = studentGrades.Max(g => g.AverageGrade);
 
@@ -128,13 +129,13 @@ public class ElectronicDiaryTests(ElectronicDiaryFixture fixture) : IClassFixtur
     }
 
     /// <summary>
-    /// Тест проверяет минимальный, максимальный и средний балл по каждому предмету
+    /// РўРµСЃС‚ РїСЂРѕРІРµСЂСЏРµС‚ РјРёРЅРёРјР°Р»СЊРЅС‹Р№, РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ Рё СЃСЂРµРґРЅРёР№ Р±Р°Р»Р» РїРѕ РєР°Р¶РґРѕРјСѓ РїСЂРµРґРјРµС‚Сѓ
     /// </summary>
     [Fact]
     public void GetGradeStatisticsBySubjectTest()
     {
         var subjectStatistics = _fixture.GradesList
-            .GroupBy(g => g.IdSubject)
+            .GroupBy(g => g.Subject)
             .Select(g => new
             {
                 Subject = g.Key,

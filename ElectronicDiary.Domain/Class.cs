@@ -5,7 +5,7 @@ public class Class
     /// <summary>
     /// Идентификатор класса
     /// </summary>
-    public required int IdClass { get; set; }
+    public required int Id { get; set; }
     /// <summary>
     /// Номер
     /// </summary>

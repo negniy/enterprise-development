@@ -11,7 +11,6 @@ public class ElectronicDiaryFixture
 
     public ElectronicDiaryFixture()
     {
-        // Инициализация данных из файла
-        GradesList = ElectronicDiaryFileReader.ReadGrades(Path.Combine("Date", "data.csv"));
+        GradesList = ElectronicDiaryFileReader.ReadGrades(Path.Combine("Data", "data.csv"));
     }
 }

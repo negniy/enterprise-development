@@ -29,7 +29,7 @@ static class ElectronicDiaryFileReader
             {
                 studyClass = new Class
                 {
-                    IdClass = classKey,
+                    Id = classKey,
                     Number = int.Parse(tokens[10]),
                     Letters = tokens[11]
                 };
@@ -46,7 +46,7 @@ static class ElectronicDiaryFileReader
                     Name = tokens[2],
                     Patronymic = tokens[3],
                     Birthday = DateOnly.ParseExact(tokens[5], "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                    IdClass = studyClass,
+                    Class = studyClass,
                     Passport = tokens[4]
                 };
                 students[studentKey] = student;
@@ -66,9 +66,10 @@ static class ElectronicDiaryFileReader
 
             var grade = new Grade
             {
-                IdStudent = student,
-                IdSubject = subject,
-                GradeValue = (GradesTypes)int.Parse(tokens[12]),
+                Id = int.Parse(tokens[14]),
+                Student = student,
+                Subject = subject,
+                GradeValue = (GradeTypes)int.Parse(tokens[12]),
                 Date = DateOnly.ParseExact(tokens[13], "yyyy-MM-dd", CultureInfo.InvariantCulture),
             };
 
