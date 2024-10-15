@@ -27,7 +27,7 @@ public class Student
     /// </summary>
     public required DateOnly Birthday { get; set; }
     /// <summary>
-    /// Пасспорт
+    /// Паспорт
     /// </summary>
     public required string Passport { get; set; }
 }

@@ -3,7 +3,7 @@
 /// <summary>
 /// Тип оценки
 /// </summary>
-public enum GradeTypes
+public enum GradeType
 {
     Bad = 2,
     Satisfactory,

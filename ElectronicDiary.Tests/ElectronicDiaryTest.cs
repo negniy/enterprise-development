@@ -1,6 +1,4 @@
-﻿using ElectronicDiary.Domain;
-
-namespace ElectronicDiary.Tests;
+﻿namespace ElectronicDiary.Tests;
 
 public class ElectronicDiaryTests(ElectronicDiaryFixture fixture) : IClassFixture<ElectronicDiaryFixture>
 {

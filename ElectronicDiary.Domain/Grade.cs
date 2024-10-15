@@ -17,7 +17,7 @@ public class Grade
     /// <summary>
     /// Оценка
     /// </summary>
-    public required GradeTypes GradeValue { get; set; }
+    public required GradeType GradeValue { get; set; }
     /// <summary>
     /// Дата получения
     /// </summary>

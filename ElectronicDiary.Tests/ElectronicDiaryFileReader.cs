@@ -1,5 +1,4 @@
 ﻿using ElectronicDiary.Domain;
-using Newtonsoft.Json.Linq;
 using System.Globalization;
 
 namespace ElectronicDiary.Tests;
@@ -69,7 +68,7 @@ static class ElectronicDiaryFileReader
                 Id = int.Parse(tokens[14]),
                 Student = student,
                 Subject = subject,
-                GradeValue = (GradeTypes)int.Parse(tokens[12]),
+                GradeValue = (GradeType)int.Parse(tokens[12]),
                 Date = DateOnly.ParseExact(tokens[13], "yyyy-MM-dd", CultureInfo.InvariantCulture),
             };
 
