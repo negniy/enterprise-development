@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectronicDiary.Domain", "E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectronicDiary.Tests", "ElectronicDiary.Tests\ElectronicDiary.Tests.csproj", "{B76E739E-017D-45E2-8FB3-B8467EC5E1ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{7A5D94CE-F7B9-49E7-B4C3-452CC2EE94D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B76E739E-017D-45E2-8FB3-B8467EC5E1ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B76E739E-017D-45E2-8FB3-B8467EC5E1ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B76E739E-017D-45E2-8FB3-B8467EC5E1ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A5D94CE-F7B9-49E7-B4C3-452CC2EE94D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A5D94CE-F7B9-49E7-B4C3-452CC2EE94D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A5D94CE-F7B9-49E7-B4C3-452CC2EE94D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A5D94CE-F7B9-49E7-B4C3-452CC2EE94D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

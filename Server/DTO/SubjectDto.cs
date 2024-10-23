@@ -1,11 +1,7 @@
-﻿namespace ElectronicDiary.Domain;
+﻿namespace Server.DTO;
 
-public class Subject
+public class SubjectDto
 {
-    /// <summary>
-    /// Идентификатор предмета
-    /// </summary>
-    public required int Id { get; set; }
     /// <summary>
     /// Название предмета
     /// </summary>

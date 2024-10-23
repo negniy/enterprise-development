@@ -143,7 +143,7 @@ public class ElectronicDiaryTests(ElectronicDiaryFixture fixture) : IClassFixtur
             })
             .ToList();
 
-        Assert.Contains(subjectStatistics, s => s.Subject.IdSubject == 1 && s.MinGrade == 3 && s.MaxGrade == 5);
-        Assert.Contains(subjectStatistics, s => s.Subject.IdSubject == 9 && s.AverageGrade > 3.74 && s.AverageGrade < 3.76);
+        Assert.Contains(subjectStatistics, s => s.Subject.Id == 1 && s.MinGrade == 3 && s.MaxGrade == 5);
+        Assert.Contains(subjectStatistics, s => s.Subject.Id == 9 && s.AverageGrade > 3.74 && s.AverageGrade < 3.76);
     }
 }

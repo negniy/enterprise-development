@@ -40,7 +40,7 @@ static class ElectronicDiaryFileReader
             {
                 student = new Student
                 {
-                    IdStudent = studentKey,
+                    Id = studentKey,
                     Surname = tokens[1],
                     Name = tokens[2],
                     Patronymic = tokens[3],
@@ -56,7 +56,7 @@ static class ElectronicDiaryFileReader
             {
                 subject = new Subject
                 {
-                    IdSubject = subjectKey,
+                    Id = subjectKey,
                     Name = tokens[7],
                     StudyYear = tokens[8]
                 };

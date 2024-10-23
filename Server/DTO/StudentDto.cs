@@ -1,11 +1,9 @@
-﻿namespace ElectronicDiary.Domain;
+﻿using ElectronicDiary.Domain;
 
-public class Student
+namespace Server.DTO;
+
+public class StudentDto
 {
-    /// <summary>
-    /// Идентификатор студента
-    /// </summary>
-    public required int Id { get; set; }
     /// <summary>
     /// Имя
     /// </summary>
@@ -21,7 +19,7 @@ public class Student
     /// <summary>
     /// Идентификатор класса
     /// </summary>
-    public required Class Class { get; set; }
+    public required int ClassId { get; set; }
     /// <summary>
     /// Дата рождения
     /// </summary>
