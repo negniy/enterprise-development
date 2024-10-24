@@ -1,4 +1,6 @@
-﻿namespace Server.DTO;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Server.DTO;
 
 public class SubjectDto
 {
@@ -9,5 +11,6 @@ public class SubjectDto
     /// <summary>
     /// Год обучения
     /// </summary>
+    [RegularExpression(@"\d\d\d\d-\d\d\d\d")]
     public required string StudyYear { get; set; }
 }

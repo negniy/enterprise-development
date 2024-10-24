@@ -45,6 +45,9 @@ public class ClassController(IRepository<Class, int> repository, IMapper mapper)
     [HttpPost]
     public IActionResult Post([FromBody] ClassDto value)
     {
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var classVal = mapper.Map<Class>(value);
         repository.Post(classVal);
         return Ok();
@@ -58,6 +61,9 @@ public class ClassController(IRepository<Class, int> repository, IMapper mapper)
     [HttpPut("{id}")]
     public IActionResult Put(int id, [FromBody] ClassDto value)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var classVal = mapper.Map<Class>(value);
         classVal.Id = id;
         if (!repository.Put(classVal, id)) return NotFound();

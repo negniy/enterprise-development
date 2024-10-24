@@ -45,6 +45,9 @@ public class GradeController(IRepository<Grade, int> repository, IRepository<Sub
     [HttpPost]
     public IActionResult Post([FromBody] GradeDto value)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var grade = mapper.Map<Grade>(value);
 
         var subject = subjectRepository.Get(value.SubjectId);
@@ -68,6 +71,9 @@ public class GradeController(IRepository<Grade, int> repository, IRepository<Sub
     [HttpPut("{id}")]
     public IActionResult Put(int id, [FromBody] GradeDto value)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var grade = mapper.Map<Grade>(value);
 
         grade.Id = id;

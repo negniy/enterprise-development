@@ -45,8 +45,12 @@ public class SubjectController(IRepository<Subject, int> repository, IMapper map
     [HttpPost]
     public IActionResult Post([FromBody] SubjectDto value)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var subject = mapper.Map<Subject>(value);
         repository.Post(subject);
+
         return Ok();
     }
 
@@ -59,9 +63,14 @@ public class SubjectController(IRepository<Subject, int> repository, IMapper map
     [HttpPut("{id}")]
     public IActionResult Put(int id, [FromBody] SubjectDto value)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var subject = mapper.Map<Subject>(value);
         subject.Id = id;
+
         if (!repository.Put(subject, id)) return NotFound();
+
         return Ok();
     }
 

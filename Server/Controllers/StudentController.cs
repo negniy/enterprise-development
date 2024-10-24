@@ -45,6 +45,9 @@ public class StudentController(IRepository<Student, int> repository, IRepository
     [HttpPost]
     public IActionResult Post([FromBody] StudentDto value)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var student = mapper.Map<Student>(value);
 
         var classVal = classRepository.Get(value.ClassId);
@@ -64,6 +67,9 @@ public class StudentController(IRepository<Student, int> repository, IRepository
     [HttpPut("{id}")]
     public IActionResult Put(int id, [FromBody] StudentDto value)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var student = mapper.Map<Student>(value);
 
         student.Id = id;

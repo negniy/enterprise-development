@@ -1,4 +1,5 @@
 ﻿using ElectronicDiary.Domain;
+using System.ComponentModel.DataAnnotations;
 
 namespace Server.DTO;
 
@@ -15,7 +16,8 @@ public class GradeDto
     /// <summary>
     /// Оценка
     /// </summary>
-    public required GradeType GradeValue { get; set; }
+    [EnumDataType(typeof(GradeType))]
+    public required int GradeValue { get; set; }
     /// <summary>
     /// Дата получения
     /// </summary>
