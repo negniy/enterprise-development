@@ -11,6 +11,6 @@ public class SubjectDto
     /// <summary>
     /// Год обучения
     /// </summary>
-    [RegularExpression(@"\d\d\d\d-\d\d\d\d")]
+    [RegularExpression(@"\d{4}-\d{4}")]
     public required string StudyYear { get; set; }
 }

@@ -11,12 +11,12 @@ public class SubjectRepository : IRepository<Subject, int>
     {
         var value = Get(id);
 
-        if (value != null)
+        if (value == null)
         {
-            _subjects.Remove(value);
-            return true;
+            return false;
         }
-        return false;
+        _subjects.Remove(value);
+        return true;
     }
 
     public Subject? Get(int id) => _subjects.Find(s => s.Id == id);
@@ -25,20 +25,21 @@ public class SubjectRepository : IRepository<Subject, int>
 
     public void Post(Subject obj)
     {
-        var subject = obj;
-        subject.Id = _id++;
-        _subjects.Add(subject);
+        obj.Id = _id++;
+        _subjects.Add(obj);
     }
 
     public bool Put(Subject obj, int id)
     {
         var oldValue = Get(id);
-        if (oldValue != null)
+
+        if (oldValue == null)
         {
-            oldValue.Name = obj.Name;
-            oldValue.StudyYear = obj.StudyYear;
-            return true;
+            return false;
         }
-        return false;
+
+        oldValue.Name = obj.Name;
+        oldValue.StudyYear = obj.StudyYear;
+        return true;
     }
 }

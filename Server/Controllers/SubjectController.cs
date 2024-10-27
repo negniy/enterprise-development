@@ -30,7 +30,8 @@ public class SubjectController(IRepository<Subject, int> repository, IMapper map
     {
         var student = repository.Get(id);
 
-        if (student == null) {
+        if (student == null)
+        {
             return NotFound();
         }
 
