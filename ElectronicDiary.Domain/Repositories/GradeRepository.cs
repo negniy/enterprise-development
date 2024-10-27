@@ -9,12 +9,12 @@ public class GradeRepository : IRepository<Grade, int>
     {
         var value = Get(id);
 
-        if (value != null)
+        if (value == null)
         {
-            _grades.Remove(value);
-            return true;
+            return false;
         }
-        return false;
+        _grades.Remove(value);
+        return true;
     }
 
     public Grade? Get(int id) => _grades.Find(s => s.Id == id);
@@ -23,22 +23,21 @@ public class GradeRepository : IRepository<Grade, int>
 
     public void Post(Grade obj)
     {
-        var grade = obj;
-        grade.Id = _id++;
-        _grades.Add(grade);
+        obj.Id = _id++;
+        _grades.Add(obj);
     }
 
     public bool Put(Grade obj, int id)
     {
         var oldValue = Get(id);
-        if (oldValue != null)
+        if (oldValue == null)
         {
-            oldValue.Subject = obj.Subject;
-            oldValue.Student = obj.Student;
-            oldValue.Date = obj.Date;
-            oldValue.GradeValue = obj.GradeValue;
-            return true;
+            return false;
         }
-        return false;
+        oldValue.Subject = obj.Subject;
+        oldValue.Student = obj.Student;
+        oldValue.Date = obj.Date;
+        oldValue.GradeValue = obj.GradeValue;
+        return true;
     }
 }

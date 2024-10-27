@@ -28,5 +28,6 @@ public class StudentDto
     /// <summary>
     /// Паспорт
     /// </summary>
+    [RegularExpression(@"Серия: \d{4} Номер: \d{6} Кем выдан: .{1,70} Место регистрации: .{1,100}")]
     public required string Passport { get; set; }
 }

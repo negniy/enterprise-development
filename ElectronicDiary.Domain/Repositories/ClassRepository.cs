@@ -9,12 +9,12 @@ public class ClassRepository : IRepository<Class, int>
     {
         var value = Get(id);
 
-        if (value != null)
+        if (value == null)
         {
-            _classes.Remove(value);
-            return true;
+            return false;
         }
-        return false;
+        _classes.Remove(value);
+        return true;
     }
 
     public Class? Get(int id) => _classes.Find(s => s.Id == id);
@@ -23,20 +23,19 @@ public class ClassRepository : IRepository<Class, int>
 
     public void Post(Class obj)
     {
-        var classVal = obj;
-        classVal.Id = _id++;
-        _classes.Add(classVal);
+        obj.Id = _id++;
+        _classes.Add(obj);
     }
 
     public bool Put(Class obj, int id)
     {
         var oldValue = Get(id);
-        if (oldValue != null)
+        if (oldValue == null)
         {
-            oldValue.Number = obj.Number;
-            oldValue.Letters = obj.Letters;
-            return true;
+            return false;
         }
-        return false;
+        oldValue.Number = obj.Number;
+        oldValue.Letters = obj.Letters;
+        return true;
     }
 }

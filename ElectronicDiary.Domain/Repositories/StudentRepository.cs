@@ -11,11 +11,12 @@ public class StudentRepository : IRepository<Student, int>
     {
         var value = Get(id);
 
-        if (value != null) { 
-            _students.Remove(value);
-            return true;
+        if (value == null)
+        { 
+            return false;
         }
-        return false;
+        _students.Remove(value);
+        return true;
     }
 
     public Student? Get(int id) => _students.Find(s => s.Id == id);
@@ -24,23 +25,24 @@ public class StudentRepository : IRepository<Student, int>
 
     public void Post(Student obj)
     {
-        var student = obj;
-        student.Id = _id++;
-        _students.Add(student);
+        obj.Id = _id++;
+        _students.Add(obj);
     }
 
     public bool Put(Student obj, int id)
     {
         var oldValue = Get(id);
-        if (oldValue != null) { 
-            oldValue.Birthday = obj.Birthday;
-            oldValue.Surname = obj.Surname;
-            oldValue.Name = obj.Name;
-            oldValue.Patronymic = obj.Patronymic;
-            oldValue.Passport = obj.Passport;
-            oldValue.Class = obj.Class;
-            return true;
+        if (oldValue == null)
+        { 
+            
+            return false;
         }
-        return false;
+        oldValue.Birthday = obj.Birthday;
+        oldValue.Surname = obj.Surname;
+        oldValue.Name = obj.Name;
+        oldValue.Patronymic = obj.Patronymic;
+        oldValue.Passport = obj.Passport;
+        oldValue.Class = obj.Class;
+        return true;
     }
 }

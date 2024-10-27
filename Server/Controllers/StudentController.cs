@@ -31,7 +31,8 @@ public class StudentController(IRepository<Student, int> repository, IRepository
     {
         var student = repository.Get(id);
 
-        if (student == null) {
+        if (student == null)
+        {
             return NotFound();
         }
 

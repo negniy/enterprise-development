@@ -31,7 +31,8 @@ public class ClassController(IRepository<Class, int> repository, IMapper mapper)
     {
         var student = repository.Get(id);
 
-        if (student == null) {
+        if (student == null)
+        {
             return NotFound();
         }
 

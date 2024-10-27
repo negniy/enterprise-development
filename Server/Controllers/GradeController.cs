@@ -31,7 +31,8 @@ public class GradeController(IRepository<Grade, int> repository, IRepository<Sub
     {
         var student = repository.Get(id);
 
-        if (student == null) {
+        if (student == null)
+        {
             return NotFound();
         }
 
