@@ -1,5 +1,4 @@
-﻿using ElectronicDiary.Domain;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Server.DTO;
 
