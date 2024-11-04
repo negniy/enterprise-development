@@ -1,27 +1,27 @@
 ﻿namespace Server.DTO
 {
     /// <summary>
-    /// DTO для представления статистики оценок по предмету (минимальный, максимальный и средний балл).
+    /// DTO for representing grade statistics for a subject (minimum, maximum, and average grade)
     /// </summary>
     public class SubjectGradeStatisticsDto
     {
         /// <summary>
-        /// Название предмета
+        /// Subject name
         /// </summary>
         public required string SubjectName { get; set; }
 
         /// <summary>
-        /// Минимальный балл по предмету
+        /// Minimum grade for the subject
         /// </summary>
         public int MinGrade { get; set; }
 
         /// <summary>
-        /// Максимальный балл по предмету
+        /// Maximum grade for the subject
         /// </summary>
         public int MaxGrade { get; set; }
 
         /// <summary>
-        /// Средний балл по предмету
+        /// Average grade for the subject
         /// </summary>
         public double AverageGrade { get; set; }
     }

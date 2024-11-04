@@ -1,32 +1,32 @@
 ﻿namespace Server.DTO;
 
 /// <summary>
-/// DTO для представления средней оценки ученика
+/// DTO for representing a student's average grade
 /// </summary>
 public class StudentAverageGradeDto
 {
     /// <summary>
-    /// Идентификатор ученика
+    /// Student's identifier
     /// </summary>
     public int StudentId { get; set; }
 
     /// <summary>
-    /// Фамилия ученика
+    /// Student's surname
     /// </summary>
     public required string Surname { get; set; }
 
     /// <summary>
-    /// Имя ученика
+    /// Student's first name
     /// </summary>
     public required string Name { get; set; }
 
     /// <summary>
-    /// Отчество ученика
+    /// Student's patronymic
     /// </summary>
-    public  required string Patronymic { get; set; }
+    public required string Patronymic { get; set; }
 
     /// <summary>
-    /// Средний балл ученика
+    /// Student's average grade
     /// </summary>
     public double AverageGrade { get; set; }
 }

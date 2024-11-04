@@ -10,7 +10,7 @@ namespace EnterpriseStatistics.Server;
 public class QueryController(IRepository<Student, int> studentRepository, IRepository<Subject, int> subjectRepository, IRepository<Grade, int> gradeRepository) : ControllerBase
 {
     /// <summary>
-    /// Запрос 1: Вывести информацию обо всех предметах.
+    /// Query 1: Retrieve information about all subjects
     /// </summary>
     [HttpGet("all_subjects")]
     public ActionResult<IEnumerable<Subject>> GetAllSubjects()
@@ -20,9 +20,9 @@ public class QueryController(IRepository<Student, int> studentRepository, IRepos
     }
 
     /// <summary>
-    /// Запрос 2: Вывести информацию обо всех учениках в указанном классе по его идентификатору, упорядочить по ФИО.
+    /// Query 2: Retrieve information about all students in a specified class by its identifier, sorted by full name
     /// </summary>
-    /// <param name="classId">Идентификатор класса</param>
+    /// <param name="classId">Class identifier</param>
     [HttpGet("students_in_class")]
     public ActionResult<IEnumerable<Student>> GetStudentsInClass(int classId)
     {
@@ -37,9 +37,9 @@ public class QueryController(IRepository<Student, int> studentRepository, IRepos
     }
 
     /// <summary>
-    /// Запрос 3: Вывести информацию обо всех учениках, получивших оценки в указанный день.
+    /// Query 3: Retrieve information about all students who received grades on a specified date
     /// </summary>
-    /// <param name="date">Дата получения оценок</param>
+    /// <param name="date">Date of the grades</param>
     [HttpGet("students_by_date")]
     public ActionResult<IEnumerable<StudentGradesDto>> GetStudentsByDate(DateOnly date)
     {
@@ -61,7 +61,7 @@ public class QueryController(IRepository<Student, int> studentRepository, IRepos
     }
 
     /// <summary>
-    /// Запрос 4: Вывести топ 5 учеников по среднему баллу.
+    /// Query 4: Retrieve the top 5 students by average grade
     /// </summary>
     [HttpGet("top_5_students_by_average")]
     public ActionResult<IEnumerable<StudentAverageGradeDto>> GetTop5StudentsByAverage()
@@ -85,10 +85,10 @@ public class QueryController(IRepository<Student, int> studentRepository, IRepos
     }
 
     /// <summary>
-    /// Запрос 5: Вывести учеников с максимальным средним баллом за указанный период.
+    /// Query 5: Retrieve students with the highest average grade over a specified period
     /// </summary>
-    /// <param name="startDate">Дата начала периода</param>
-    /// <param name="endDate">Дата окончания периода</param>
+    /// <param name="startDate">Start date of the period</param>
+    /// <param name="endDate">End date of the period</param>
     [HttpGet("students_with_max_average_by_period")]
     public ActionResult<IEnumerable<StudentAverageGradeDto>> GetStudentsWithMaxAverageByPeriod(DateOnly startDate, DateOnly endDate)
     {
@@ -119,7 +119,7 @@ public class QueryController(IRepository<Student, int> studentRepository, IRepos
     }
 
     /// <summary>
-    /// Запрос 6: Вывести информацию о минимальном, среднем и максимальном балле по каждому предмету.
+    /// Query 6: Retrieve information on the minimum, average, and maximum grade for each subject
     /// </summary>
     [HttpGet("subject_grades_statistics")]
     public ActionResult<IEnumerable<SubjectGradeStatisticsDto>> GetSubjectGradesStatistics()
