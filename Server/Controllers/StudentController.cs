@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ElectronicDiary.Domain;
 using ElectronicDiary.Domain.Repositories;
-using Newtonsoft.Json.Linq;
 using AutoMapper;
 using Server.DTO;
 
@@ -16,46 +15,45 @@ public class StudentController(IRepository<Student, int> repository, IRepository
     /// </summary>
     /// <returns>List of all students and http status</returns>
     [HttpGet]
-    public ActionResult<IEnumerable<Student>> Get()
+    public async Task<ActionResult<IEnumerable<Student>>> Get()
     {
-        return Ok(repository.GetAll());
+        var students = await repository.GetAll();
+        return Ok(students);
     }
 
     /// <summary>
-    /// Get student wiht such index
+    /// Get student with such index
     /// </summary>
-    /// <param name="id">Indev of needed student</param>
-    /// <returns>grade and http status</returns>
+    /// <param name="id">Index of needed student</param>
+    /// <returns>Student and http status</returns>
     [HttpGet("{id}")]
-    public ActionResult<Student> Get(int id)
+    public async Task<ActionResult<Student>> Get(int id)
     {
-        var student = repository.Get(id);
+        var student = await repository.Get(id);
 
         if (student == null)
-        {
             return NotFound();
-        }
 
         return Ok(student);
     }
 
     /// <summary>
-    /// Add student in collection
+    /// Add student to collection
     /// </summary>
-    /// <param name="value">Exemplar of student which needed to be add in collection</param>
+    /// <param name="value">Exemplar of student to add</param>
     [HttpPost]
-    public IActionResult Post([FromBody] StudentDto value)
+    public async Task<IActionResult> Post([FromBody] StudentDto value)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         var student = mapper.Map<Student>(value);
 
-        var classVal = classRepository.Get(value.ClassId);
+        var classVal = await classRepository.Get(value.ClassId);
         if (classVal == null) return NotFound("Class not found");
         student.Class = classVal;
 
-        repository.Post(student);
+        await repository.Post(student);
 
         return Ok();
     }
@@ -63,23 +61,25 @@ public class StudentController(IRepository<Student, int> repository, IRepository
     /// <summary>
     /// Replace student with such index in collection 
     /// </summary>
-    /// <param name="value">New exemplar of student that we are replacing the old one with</param>
     /// <param name="id">Index of replacing student</param>
+    /// <param name="value">New exemplar of student</param>
     [HttpPut("{id}")]
-    public IActionResult Put(int id, [FromBody] StudentDto value)
+    public async Task<IActionResult> Put(int id, [FromBody] StudentDto value)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var student = mapper.Map<Student>(value);
+        var existingStudent = await repository.Get(id);
+        if (existingStudent == null) return NotFound();
 
+        var student = mapper.Map<Student>(value);
         student.Id = id;
 
-        var classVal = classRepository.Get(value.ClassId);
+        var classVal = await classRepository.Get(value.ClassId);
         if (classVal == null) return NotFound("Class not found");
         student.Class = classVal;
 
-        if (!repository.Put(student, id)) return NotFound();
+        await repository.Put(student, id);
 
         return Ok();
     }
@@ -89,9 +89,12 @@ public class StudentController(IRepository<Student, int> repository, IRepository
     /// </summary>
     /// <param name="id">Index of deleting student</param>
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        if (!repository.Delete(id)) return NotFound();
+        var student = await repository.Get(id);
+        if (student == null) return NotFound();
+
+        await repository.Delete(id);
         return Ok();
     }
 }

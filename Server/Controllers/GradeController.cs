@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ElectronicDiary.Domain;
 using ElectronicDiary.Domain.Repositories;
-using Newtonsoft.Json.Linq;
 using AutoMapper;
 using Server.DTO;
 
@@ -16,50 +15,46 @@ public class GradeController(IRepository<Grade, int> repository, IRepository<Sub
     /// </summary>
     /// <returns>List of all grades and http status</returns>
     [HttpGet]
-    public ActionResult<IEnumerable<Grade>> Get()
+    public async Task<ActionResult<IEnumerable<Grade>>> Get()
     {
-        return Ok(repository.GetAll());
+        var grades = await repository.GetAll();
+        return Ok(grades);
     }
 
     /// <summary>
-    /// Get grade wiht such index
+    /// Get grade with such index
     /// </summary>
-    /// <param name="id">Indev of needed grade</param>
-    /// <returns>grade and http status</returns>
+    /// <param name="id">Index of needed grade</param>
+    /// <returns>Grade and http status</returns>
     [HttpGet("{id}")]
-    public ActionResult<Grade> Get(int id)
+    public async Task<ActionResult<Grade>> Get(int id)
     {
-        var student = repository.Get(id);
-
-        if (student == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(student);
+        var grade = await repository.Get(id);
+        if (grade == null) return NotFound();
+        return Ok(grade);
     }
 
     /// <summary>
-    /// Add grade in collection
+    /// Add grade to collection
     /// </summary>
-    /// <param name="value">Exemplar of grade which needed to be add in collection</param>
+    /// <param name="value">Exemplar of grade to add to collection</param>
     [HttpPost]
-    public IActionResult Post([FromBody] GradeDto value)
+    public async Task<IActionResult> Post([FromBody] GradeDto value)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         var grade = mapper.Map<Grade>(value);
 
-        var subject = subjectRepository.Get(value.SubjectId);
+        var subject = await subjectRepository.Get(value.SubjectId);
         if (subject == null) return NotFound("Subject not found");
         grade.Subject = subject;
 
-        var student = studentRepository.Get(value.StudentId);
+        var student = await studentRepository.Get(value.StudentId);
         if (student == null) return NotFound("Student not found");
         grade.Student = student;
 
-        repository.Post(grade);
+        await repository.Post(grade);
 
         return Ok();
     }
@@ -67,27 +62,29 @@ public class GradeController(IRepository<Grade, int> repository, IRepository<Sub
     /// <summary>
     /// Replace grade with such index in collection 
     /// </summary>
-    /// <param name="value">New exemplar of grade that we are replacing the old one with</param>
+    /// <param name="value">New exemplar of grade to replace the old one</param>
     /// <param name="id">Index of replacing grade</param>
     [HttpPut("{id}")]
-    public IActionResult Put(int id, [FromBody] GradeDto value)
+    public async Task<IActionResult> Put(int id, [FromBody] GradeDto value)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var grade = mapper.Map<Grade>(value);
+        var existingGrade = await repository.Get(id);
+        if (existingGrade == null) return NotFound();
 
+        var grade = mapper.Map<Grade>(value);
         grade.Id = id;
 
-        var subject = subjectRepository.Get(value.SubjectId);
+        var subject = await subjectRepository.Get(value.SubjectId);
         if (subject == null) return NotFound("Subject not found");
         grade.Subject = subject;
 
-        var student = studentRepository.Get(value.StudentId);
-        if(student == null) return NotFound("Student not found");
+        var student = await studentRepository.Get(value.StudentId);
+        if (student == null) return NotFound("Student not found");
         grade.Student = student;
 
-        if (!repository.Put(grade, id)) return NotFound();
+        await repository.Put(grade, id);
 
         return Ok();
     }
@@ -97,9 +94,12 @@ public class GradeController(IRepository<Grade, int> repository, IRepository<Sub
     /// </summary>
     /// <param name="id">Index of deleting grade</param>
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        if (!repository.Delete(id)) return NotFound();
+        var grade = await repository.Get(id);
+        if (grade == null) return NotFound();
+
+        await repository.Delete(id);
         return Ok();
     }
 }

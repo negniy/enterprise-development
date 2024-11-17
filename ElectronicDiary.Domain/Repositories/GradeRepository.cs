@@ -1,43 +1,42 @@
-﻿namespace ElectronicDiary.Domain.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
 
-public class GradeRepository : IRepository<Grade, int>
+namespace ElectronicDiary.Domain.Repositories;
+
+public class GradeRepository(ElectronicDiaryDbContext context) : IRepository<Grade, int>
 {
-    private readonly List<Grade> _grades = [];
-    private int _id = 1;
-
-    public bool Delete(int id)
+    public async Task Delete(int id)
     {
-        var value = Get(id);
+        var value = await Get(id);
 
-        if (value == null)
+        if (value != null)
         {
-            return false;
+            context.Grades.Remove(value);
+            await context.SaveChangesAsync();
         }
-        _grades.Remove(value);
-        return true;
     }
 
-    public Grade? Get(int id) => _grades.Find(s => s.Id == id);
+    public async Task<Grade?> Get(int id) => await context.Grades.FindAsync(id);
 
-    public IEnumerable<Grade> GetAll() => _grades;
+    public async Task<IEnumerable<Grade>> GetAll() => await context.Grades.ToListAsync();
 
-    public void Post(Grade obj)
+    public async Task Post(Grade obj)
     {
-        obj.Id = _id++;
-        _grades.Add(obj);
+        await context.Grades.AddAsync(obj);
+        await context.SaveChangesAsync();
     }
 
-    public bool Put(Grade obj, int id)
+    public async Task Put(Grade obj, int id)
     {
-        var oldValue = Get(id);
-        if (oldValue == null)
+        var oldValue = await Get(id);
+        if (oldValue != null)
         {
-            return false;
+            oldValue.Subject = obj.Subject;
+            oldValue.Student = obj.Student;
+            oldValue.Date = obj.Date;
+            oldValue.GradeValue = obj.GradeValue;
+
+            context.Grades.Update(oldValue);
+            await context.SaveChangesAsync();
         }
-        oldValue.Subject = obj.Subject;
-        oldValue.Student = obj.Student;
-        oldValue.Date = obj.Date;
-        oldValue.GradeValue = obj.GradeValue;
-        return true;
     }
 }

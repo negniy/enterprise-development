@@ -7,15 +7,19 @@ namespace EnterpriseStatistics.Server;
 
 [Route("api/[controller]")]
 [ApiController]
-public class QueryController(IRepository<Student, int> studentRepository, IRepository<Subject, int> subjectRepository, IRepository<Grade, int> gradeRepository) : ControllerBase
+public class QueryController(
+    IRepository<Student, int> studentRepository,
+    IRepository<Subject, int> subjectRepository,
+    IRepository<Grade, int> gradeRepository
+) : ControllerBase
 {
     /// <summary>
     /// Query 1: Retrieve information about all subjects
     /// </summary>
     [HttpGet("all_subjects")]
-    public ActionResult<IEnumerable<Subject>> GetAllSubjects()
+    public async Task<ActionResult<IEnumerable<Subject>>> GetAllSubjects()
     {
-        var subjects = subjectRepository.GetAll().ToList();
+        var subjects = await subjectRepository.GetAll();
         return Ok(subjects);
     }
 
@@ -24,9 +28,9 @@ public class QueryController(IRepository<Student, int> studentRepository, IRepos
     /// </summary>
     /// <param name="classId">Class identifier</param>
     [HttpGet("students_in_class")]
-    public ActionResult<IEnumerable<Student>> GetStudentsInClass(int classId)
+    public async Task<ActionResult<IEnumerable<Student>>> GetStudentsInClass(int classId)
     {
-        var students = studentRepository.GetAll()
+        var students = (await studentRepository.GetAll())
             .Where(student => student.Class.Id == classId)
             .OrderBy(student => student.Surname)
             .ThenBy(student => student.Name)
@@ -41,9 +45,9 @@ public class QueryController(IRepository<Student, int> studentRepository, IRepos
     /// </summary>
     /// <param name="date">Date of the grades</param>
     [HttpGet("students_by_date")]
-    public ActionResult<IEnumerable<StudentGradesDto>> GetStudentsByDate(DateOnly date)
+    public async Task<ActionResult<IEnumerable<StudentGradesDto>>> GetStudentsByDate(DateOnly date)
     {
-        var studentsWithGrades = gradeRepository.GetAll()
+        var studentsWithGrades = (await gradeRepository.GetAll())
             .Where(grade => grade.Date == date)
             .Select(grade => new StudentGradesDto
             {
@@ -64,16 +68,18 @@ public class QueryController(IRepository<Student, int> studentRepository, IRepos
     /// Query 4: Retrieve the top 5 students by average grade
     /// </summary>
     [HttpGet("top_5_students_by_average")]
-    public ActionResult<IEnumerable<StudentAverageGradeDto>> GetTop5StudentsByAverage()
+    public async Task<ActionResult<IEnumerable<StudentAverageGradeDto>>> GetTop5StudentsByAverage()
     {
-        var topStudents = studentRepository.GetAll()
+        var grades = await gradeRepository.GetAll();
+
+        var topStudents = (await studentRepository.GetAll())
             .Select(student => new StudentAverageGradeDto
             {
                 StudentId = student.Id,
                 Surname = student.Surname,
                 Name = student.Name,
                 Patronymic = student.Patronymic,
-                AverageGrade = gradeRepository.GetAll()
+                AverageGrade = grades
                     .Where(grade => grade.Student.Id == student.Id)
                     .Average(grade => (int)grade.GradeValue)
             })
@@ -90,13 +96,15 @@ public class QueryController(IRepository<Student, int> studentRepository, IRepos
     /// <param name="startDate">Start date of the period</param>
     /// <param name="endDate">End date of the period</param>
     [HttpGet("students_with_max_average_by_period")]
-    public ActionResult<IEnumerable<StudentAverageGradeDto>> GetStudentsWithMaxAverageByPeriod(DateOnly startDate, DateOnly endDate)
+    public async Task<ActionResult<IEnumerable<StudentAverageGradeDto>>> GetStudentsWithMaxAverageByPeriod(DateOnly startDate, DateOnly endDate)
     {
-        var studentAverages = studentRepository.GetAll()
+        var grades = await gradeRepository.GetAll();
+
+        var studentAverages = (await studentRepository.GetAll())
             .Select(student => new
             {
                 Student = student,
-                AverageGrade = gradeRepository.GetAll()
+                AverageGrade = grades
                     .Where(grade => grade.Student.Id == student.Id && grade.Date >= startDate && grade.Date <= endDate)
                     .Average(grade => (int)grade.GradeValue)
             })
@@ -122,19 +130,21 @@ public class QueryController(IRepository<Student, int> studentRepository, IRepos
     /// Query 6: Retrieve information on the minimum, average, and maximum grade for each subject
     /// </summary>
     [HttpGet("subject_grades_statistics")]
-    public ActionResult<IEnumerable<SubjectGradeStatisticsDto>> GetSubjectGradesStatistics()
+    public async Task<ActionResult<IEnumerable<SubjectGradeStatisticsDto>>> GetSubjectGradesStatistics()
     {
-        var subjectStatistics = subjectRepository.GetAll()
+        var grades = await gradeRepository.GetAll();
+
+        var subjectStatistics = (await subjectRepository.GetAll())
             .Select(subject => new SubjectGradeStatisticsDto
             {
                 SubjectName = subject.Name,
-                MinGrade = gradeRepository.GetAll()
+                MinGrade = grades
                     .Where(grade => grade.Subject.Id == subject.Id)
                     .Min(grade => (int)grade.GradeValue),
-                MaxGrade = gradeRepository.GetAll()
+                MaxGrade = grades
                     .Where(grade => grade.Subject.Id == subject.Id)
                     .Max(grade => (int)grade.GradeValue),
-                AverageGrade = gradeRepository.GetAll()
+                AverageGrade = grades
                     .Where(grade => grade.Subject.Id == subject.Id)
                     .Average(grade => (int)grade.GradeValue)
             })

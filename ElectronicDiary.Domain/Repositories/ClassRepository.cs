@@ -1,41 +1,40 @@
-﻿namespace ElectronicDiary.Domain.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
 
-public class ClassRepository : IRepository<Class, int>
+namespace ElectronicDiary.Domain.Repositories;
+
+public class ClassRepository(ElectronicDiaryDbContext context) : IRepository<Class, int>
 {
-    private readonly List<Class> _classes = [];
-    private int _id = 1;
-
-    public bool Delete(int id)
+    public async Task Delete(int id)
     {
-        var value = Get(id);
+        var value = await Get(id);
 
-        if (value == null)
+        if (value != null)
         {
-            return false;
+            context.Classes.Remove(value);
+            await context.SaveChangesAsync();
         }
-        _classes.Remove(value);
-        return true;
     }
 
-    public Class? Get(int id) => _classes.Find(s => s.Id == id);
+    public async Task<Class?> Get(int id) => await context.Classes.FindAsync(id);
+    
 
-    public IEnumerable<Class> GetAll() => _classes;
+    public async Task<IEnumerable<Class>> GetAll() => await context.Classes.ToListAsync();
 
-    public void Post(Class obj)
+    public async Task Post(Class obj)
     {
-        obj.Id = _id++;
-        _classes.Add(obj);
+        await context.Classes.AddAsync(obj);
+        await context.SaveChangesAsync();
     }
 
-    public bool Put(Class obj, int id)
+    public async Task Put(Class obj, int id)
     {
-        var oldValue = Get(id);
-        if (oldValue == null)
+        var oldValue = await Get(id);
+        if (oldValue != null)
         {
-            return false;
+            oldValue.Number = obj.Number;
+            oldValue.Letters = obj.Letters;
+            context.Classes.Update(oldValue);
+            await context.SaveChangesAsync();
         }
-        oldValue.Number = obj.Number;
-        oldValue.Letters = obj.Letters;
-        return true;
     }
 }

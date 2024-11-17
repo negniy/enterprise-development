@@ -1,48 +1,44 @@
-﻿using System.Security.Cryptography;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ElectronicDiary.Domain.Repositories;
 
-public class StudentRepository : IRepository<Student, int>
+public class StudentRepository(ElectronicDiaryDbContext context) : IRepository<Student, int>
 {
-    private readonly List<Student> _students = [];
-    private int _id = 1;
-
-    public bool Delete(int id)
+    public async Task Delete(int id)
     {
-        var value = Get(id);
+        var value = await Get(id);
 
-        if (value == null)
-        { 
-            return false;
+        if (value != null)
+        {
+            context.Students.Remove(value);
+            await context.SaveChangesAsync();
         }
-        _students.Remove(value);
-        return true;
     }
 
-    public Student? Get(int id) => _students.Find(s => s.Id == id);
+    public async Task<Student?> Get(int id) => await context.Students.FindAsync(id);
 
-    public IEnumerable<Student> GetAll() => _students;
+    public async Task<IEnumerable<Student>> GetAll() => await context.Students.ToListAsync();
 
-    public void Post(Student obj)
+    public async Task Post(Student obj)
     {
-        obj.Id = _id++;
-        _students.Add(obj);
+        await context.Students.AddAsync(obj);
+        await context.SaveChangesAsync();
     }
 
-    public bool Put(Student obj, int id)
+    public async Task Put(Student obj, int id)
     {
-        var oldValue = Get(id);
-        if (oldValue == null)
-        { 
-            
-            return false;
+        var oldValue = await Get(id);
+        if (oldValue != null)
+        {
+            oldValue.Birthday = obj.Birthday;
+            oldValue.Surname = obj.Surname;
+            oldValue.Name = obj.Name;
+            oldValue.Patronymic = obj.Patronymic;
+            oldValue.Passport = obj.Passport;
+            oldValue.Class = obj.Class;
+
+            context.Students.Update(oldValue);
+            await context.SaveChangesAsync();
         }
-        oldValue.Birthday = obj.Birthday;
-        oldValue.Surname = obj.Surname;
-        oldValue.Name = obj.Name;
-        oldValue.Patronymic = obj.Patronymic;
-        oldValue.Passport = obj.Passport;
-        oldValue.Class = obj.Class;
-        return true;
     }
 }

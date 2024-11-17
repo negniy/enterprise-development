@@ -1,45 +1,41 @@
-﻿using System.Security.Cryptography;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ElectronicDiary.Domain.Repositories;
 
-public class SubjectRepository : IRepository<Subject, int>
+public class SubjectRepository(ElectronicDiaryDbContext context) : IRepository<Subject, int>
 {
-    private readonly List<Subject> _subjects = [];
-    private int _id = 1;
-
-    public bool Delete(int id)
+    public async Task Delete(int id)
     {
-        var value = Get(id);
+        var value = await Get(id);
 
-        if (value == null)
+        if (value != null)
         {
-            return false;
+            context.Subjects.Remove(value);
+            await context.SaveChangesAsync();
         }
-        _subjects.Remove(value);
-        return true;
     }
 
-    public Subject? Get(int id) => _subjects.Find(s => s.Id == id);
+    public async Task<Subject?> Get(int id) => await context.Subjects.FindAsync(id);
 
-    public IEnumerable<Subject> GetAll() => _subjects;
+    public async Task<IEnumerable<Subject>> GetAll() => await context.Subjects.ToListAsync();
 
-    public void Post(Subject obj)
+    public async Task Post(Subject obj)
     {
-        obj.Id = _id++;
-        _subjects.Add(obj);
+        await context.Subjects.AddAsync(obj);
+        await context.SaveChangesAsync();
     }
 
-    public bool Put(Subject obj, int id)
+    public async Task Put(Subject obj, int id)
     {
-        var oldValue = Get(id);
+        var oldValue = await Get(id);
 
-        if (oldValue == null)
+        if (oldValue != null)
         {
-            return false;
-        }
+            oldValue.Name = obj.Name;
+            oldValue.StudyYear = obj.StudyYear;
 
-        oldValue.Name = obj.Name;
-        oldValue.StudyYear = obj.StudyYear;
-        return true;
+            context.Subjects.Update(oldValue);
+            await context.SaveChangesAsync();
+        }
     }
 }

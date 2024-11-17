@@ -15,62 +15,61 @@ public class SubjectController(IRepository<Subject, int> repository, IMapper map
     /// </summary>
     /// <returns>List of all subjects and http status</returns>
     [HttpGet]
-    public ActionResult<IEnumerable<Subject>> Get()
+    public async Task<ActionResult<IEnumerable<Subject>>> Get()
     {
-        return Ok(repository.GetAll());
+        var subjects = await repository.GetAll();
+        return Ok(subjects);
     }
 
     /// <summary>
-    /// Get subject wiht such index
+    /// Get subject with such index
     /// </summary>
-    /// <param name="id">Indev of needed subject</param>
+    /// <param name="id">Index of needed subject</param>
     /// <returns>Subject and http status</returns>
     [HttpGet("{id}")]
-    public ActionResult<Subject> Get(int id)
+    public async Task<ActionResult<Subject>> Get(int id)
     {
-        var student = repository.Get(id);
+        var subject = await repository.Get(id);
 
-        if (student == null)
-        {
-            return NotFound();
-        }
+        if (subject == null) return NotFound();
 
-        return Ok(student);
+        return Ok(subject);
     }
 
     /// <summary>
-    /// Add subject in collection
+    /// Add subject to collection
     /// </summary>
-    /// <param name="value">Exampler which need to add</param>
-    /// <returns></returns>
+    /// <param name="value">Exemplar of subject to add</param>
     [HttpPost]
-    public IActionResult Post([FromBody] SubjectDto value)
+    public async Task<IActionResult> Post([FromBody] SubjectDto value)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         var subject = mapper.Map<Subject>(value);
-        repository.Post(subject);
+        await repository.Post(subject);
 
         return Ok();
     }
 
     /// <summary>
-    /// Replase 
+    /// Replace subject with such index in collection
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
+    /// <param name="id">Index of replacing subject</param>
+    /// <param name="value">New exemplar of subject</param>
     [HttpPut("{id}")]
-    public IActionResult Put(int id, [FromBody] SubjectDto value)
+    public async Task<IActionResult> Put(int id, [FromBody] SubjectDto value)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
+        var existingSubject = await repository.Get(id);
+        if (existingSubject == null) return NotFound();
+
         var subject = mapper.Map<Subject>(value);
         subject.Id = id;
 
-        if (!repository.Put(subject, id)) return NotFound();
+        await repository.Put(subject, id);
 
         return Ok();
     }
@@ -80,9 +79,13 @@ public class SubjectController(IRepository<Subject, int> repository, IMapper map
     /// </summary>
     /// <param name="id">Index of deleting subject</param>
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        if (!repository.Delete(id)) return NotFound();
+        var subject = await repository.Get(id);
+        if (subject == null) return NotFound();
+
+        await repository.Delete(id);
+
         return Ok();
     }
 }
