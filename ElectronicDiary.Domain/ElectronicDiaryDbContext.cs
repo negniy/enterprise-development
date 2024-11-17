@@ -32,7 +32,7 @@ public class ElectronicDiaryDbContext(DbContextOptions<ElectronicDiaryDbContext>
         modelBuilder.Entity<Student>()
             .HasOne(s => s.Class)
             .WithMany()
-            .HasForeignKey(s => s.Class.Id)
+            .HasForeignKey("Class_id")
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Student>()
@@ -76,13 +76,13 @@ public class ElectronicDiaryDbContext(DbContextOptions<ElectronicDiaryDbContext>
         modelBuilder.Entity<Grade>()
             .HasOne(g => g.Student)
             .WithMany()
-            .HasForeignKey(g => g.Student.Id)
+            .HasForeignKey("Student_id")
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Grade>()
             .HasOne(g => g.Subject)
             .WithMany()
-            .HasForeignKey(g => g.Subject.Id)
+            .HasForeignKey("Subject_id")
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Grade>()
