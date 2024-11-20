@@ -8,11 +8,11 @@ public class SubjectRepository(ElectronicDiaryDbContext context) : IRepository<S
     {
         var value = await Get(id);
 
-        if (value != null)
-        {
-            context.Subjects.Remove(value);
-            await context.SaveChangesAsync();
-        }
+        if (value == null)
+            return;
+
+        context.Subjects.Remove(value);
+        await context.SaveChangesAsync();
     }
 
     public async Task<Subject?> Get(int id) => await context.Subjects.FindAsync(id);
@@ -29,13 +29,13 @@ public class SubjectRepository(ElectronicDiaryDbContext context) : IRepository<S
     {
         var oldValue = await Get(id);
 
-        if (oldValue != null)
-        {
-            oldValue.Name = obj.Name;
-            oldValue.StudyYear = obj.StudyYear;
+        if (oldValue == null)
+            return;
 
-            context.Subjects.Update(oldValue);
-            await context.SaveChangesAsync();
-        }
+        oldValue.Name = obj.Name;
+        oldValue.StudyYear = obj.StudyYear;
+
+        context.Subjects.Update(oldValue);
+        await context.SaveChangesAsync();
     }
 }

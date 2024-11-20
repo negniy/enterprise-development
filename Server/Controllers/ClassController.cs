@@ -19,8 +19,6 @@ public class ClassController(IRepository<Class, int> repository, IMapper mapper)
     {
         var classes = await repository.GetAll();
 
-        if (classes == null) return NotFound();
-
         return Ok(classes);
     }
 

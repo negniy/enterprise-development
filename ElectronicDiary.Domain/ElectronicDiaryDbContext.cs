@@ -32,26 +32,26 @@ public class ElectronicDiaryDbContext(DbContextOptions<ElectronicDiaryDbContext>
         modelBuilder.Entity<Student>()
             .HasOne(s => s.Class)
             .WithMany()
-            .HasForeignKey("Class_id")
+            .HasForeignKey("ClassId")
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Student>()
             .Property(s => s.Passport)
-            .HasMaxLength(100);
+            .HasMaxLength(5000);
 
         modelBuilder.Entity<Student>()
             .Property(s => s.Name)
-            .HasMaxLength(45)
+            .HasMaxLength(150)
             .IsRequired();
 
         modelBuilder.Entity<Student>()
             .Property(s => s.Surname)
-            .HasMaxLength(45)
+            .HasMaxLength(150)
             .IsRequired();
 
         modelBuilder.Entity<Student>()
             .Property(s => s.Patronymic)
-            .HasMaxLength(45);
+            .HasMaxLength(150);
 
         modelBuilder.Entity<Student>()
             .Property(s => s.Birthday)
@@ -76,13 +76,13 @@ public class ElectronicDiaryDbContext(DbContextOptions<ElectronicDiaryDbContext>
         modelBuilder.Entity<Grade>()
             .HasOne(g => g.Student)
             .WithMany()
-            .HasForeignKey("Student_id")
+            .HasForeignKey("StudentId")
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Grade>()
             .HasOne(g => g.Subject)
             .WithMany()
-            .HasForeignKey("Subject_id")
+            .HasForeignKey("SubjectId")
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Grade>()

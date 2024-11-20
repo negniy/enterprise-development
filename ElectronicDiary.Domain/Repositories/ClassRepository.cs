@@ -8,15 +8,15 @@ public class ClassRepository(ElectronicDiaryDbContext context) : IRepository<Cla
     {
         var value = await Get(id);
 
-        if (value != null)
-        {
-            context.Classes.Remove(value);
-            await context.SaveChangesAsync();
-        }
+        if (value == null)
+            return;
+
+        context.Classes.Remove(value);
+        await context.SaveChangesAsync();
     }
 
     public async Task<Class?> Get(int id) => await context.Classes.FindAsync(id);
-    
+
 
     public async Task<IEnumerable<Class>> GetAll() => await context.Classes.ToListAsync();
 
@@ -29,12 +29,12 @@ public class ClassRepository(ElectronicDiaryDbContext context) : IRepository<Cla
     public async Task Put(Class obj, int id)
     {
         var oldValue = await Get(id);
-        if (oldValue != null)
-        {
-            oldValue.Number = obj.Number;
-            oldValue.Letters = obj.Letters;
-            context.Classes.Update(oldValue);
-            await context.SaveChangesAsync();
-        }
+        if (oldValue == null)
+            return;
+
+        oldValue.Number = obj.Number;
+        oldValue.Letters = obj.Letters;
+        context.Classes.Update(oldValue);
+        await context.SaveChangesAsync();
     }
 }

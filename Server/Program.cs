@@ -8,7 +8,7 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration["ConnectionStrings:MySql"];
+var connectionString = builder.Configuration.GetConnectionString("MySql");
 
 builder.Services.AddDbContext<ElectronicDiaryDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));

@@ -8,11 +8,11 @@ public class GradeRepository(ElectronicDiaryDbContext context) : IRepository<Gra
     {
         var value = await Get(id);
 
-        if (value != null)
-        {
-            context.Grades.Remove(value);
-            await context.SaveChangesAsync();
-        }
+        if (value == null)
+            return;
+
+        context.Grades.Remove(value);
+        await context.SaveChangesAsync();
     }
 
     public async Task<Grade?> Get(int id) => await context.Grades.FindAsync(id);
@@ -28,15 +28,15 @@ public class GradeRepository(ElectronicDiaryDbContext context) : IRepository<Gra
     public async Task Put(Grade obj, int id)
     {
         var oldValue = await Get(id);
-        if (oldValue != null)
-        {
-            oldValue.Subject = obj.Subject;
-            oldValue.Student = obj.Student;
-            oldValue.Date = obj.Date;
-            oldValue.GradeValue = obj.GradeValue;
+        if (oldValue == null)
+            return;
 
-            context.Grades.Update(oldValue);
-            await context.SaveChangesAsync();
-        }
+        oldValue.Subject = obj.Subject;
+        oldValue.Student = obj.Student;
+        oldValue.Date = obj.Date;
+        oldValue.GradeValue = obj.GradeValue;
+
+        context.Grades.Update(oldValue);
+        await context.SaveChangesAsync();
     }
 }
