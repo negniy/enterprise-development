@@ -15,9 +15,9 @@ public class StudentRepository(ElectronicDiaryDbContext context) : IRepository<S
         await context.SaveChangesAsync();
     }
 
-    public async Task<Student?> Get(int id) => await context.Students.FindAsync(id);
+    public async Task<Student?> Get(int id) => await context.Students.Include(s => s.Class).FirstOrDefaultAsync(s => s.Id == id);
 
-    public async Task<IEnumerable<Student>> GetAll() => await context.Students.ToListAsync();
+    public async Task<IEnumerable<Student>> GetAll() => await context.Students.Include(s => s.Class).ToListAsync();
 
     public async Task Post(Student obj)
     {

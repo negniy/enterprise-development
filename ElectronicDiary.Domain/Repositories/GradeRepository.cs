@@ -15,9 +15,9 @@ public class GradeRepository(ElectronicDiaryDbContext context) : IRepository<Gra
         await context.SaveChangesAsync();
     }
 
-    public async Task<Grade?> Get(int id) => await context.Grades.FindAsync(id);
+    public async Task<Grade?> Get(int id) => await context.Grades.Include(s => s.Student).Include(s => s.Subject).FirstOrDefaultAsync(s => s.Id == id);
 
-    public async Task<IEnumerable<Grade>> GetAll() => await context.Grades.ToListAsync();
+    public async Task<IEnumerable<Grade>> GetAll() => await context.Grades.Include(s => s.Student).Include(s => s.Subject).ToListAsync();
 
     public async Task Post(Grade obj)
     {
