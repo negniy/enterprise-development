@@ -70,25 +70,26 @@ public class QueryController(
     [HttpGet("top_5_students_by_average")]
     public async Task<ActionResult<IEnumerable<StudentAverageGradeDto>>> GetTop5StudentsByAverage()
     {
-        var grades = await gradeRepository.GetAll();
-
-        var topStudents = (await studentRepository.GetAll())
-            .Select(student => new StudentAverageGradeDto
-            {
-                StudentId = student.Id,
-                Surname = student.Surname,
-                Name = student.Name,
-                Patronymic = student.Patronymic,
-                AverageGrade = grades
-                    .Where(grade => grade.Student.Id == student.Id)
-                    .Average(grade => (int)grade.GradeValue)
-            })
-            .OrderByDescending(student => student.AverageGrade)
-            .Take(5)
-            .ToList();
+        var topStudents = (from student in await studentRepository.GetAll()
+                           join grade in await gradeRepository.GetAll()
+                           on student.Id equals grade.Student.Id into studentGrades
+                           from sg in studentGrades.DefaultIfEmpty()
+                           group sg by new { student.Id, student.Surname, student.Name, student.Patronymic } into grouped
+                           select new StudentAverageGradeDto
+                           {
+                               StudentId = grouped.Key.Id,
+                               Surname = grouped.Key.Surname,
+                               Name = grouped.Key.Name,
+                               Patronymic = grouped.Key.Patronymic,
+                               AverageGrade = grouped.Average(g => g != null ? (double?)g.GradeValue : null) ?? 0
+                           })
+                          .OrderByDescending(dto => dto.AverageGrade)
+                          .Take(5)
+                          .ToList();
 
         return Ok(topStudents);
     }
+
 
     /// <summary>
     /// Query 5: Retrieve students with the highest average grade over a specified period
@@ -98,20 +99,23 @@ public class QueryController(
     [HttpGet("students_with_max_average_by_period")]
     public async Task<ActionResult<IEnumerable<StudentAverageGradeDto>>> GetStudentsWithMaxAverageByPeriod(DateOnly startDate, DateOnly endDate)
     {
-        var grades = await gradeRepository.GetAll();
+        var studentsWithAverages = (from student in await studentRepository.GetAll()
+                                    join grade in await gradeRepository.GetAll()
+                                    on student.Id equals grade.Student.Id into studentGrades
+                                    from sg in studentGrades.DefaultIfEmpty()
+                                    where sg == null || (sg.Date >= startDate && sg.Date <= endDate)
+                                    group sg by new { student.Id, student.Surname, student.Name, student.Patronymic } into grouped
+                                    select new
+                                    {
+                                        Student = grouped.Key,
+                                        AverageGrade = grouped
+                                            .Where(g => g != null)
+                                            .Average(g => (double?)g.GradeValue) ?? 0
+                                    }).ToList();
 
-        var studentAverages = (await studentRepository.GetAll())
-            .Select(student => new
-            {
-                Student = student,
-                AverageGrade = grades
-                    .Where(grade => grade.Student.Id == student.Id && grade.Date >= startDate && grade.Date <= endDate)
-                    .Average(grade => (int)grade.GradeValue)
-            })
-            .ToList();
+        var maxAverage = studentsWithAverages.Max(x => x.AverageGrade);
 
-        var maxAverage = studentAverages.Max(x => x.AverageGrade);
-        var topStudents = studentAverages
+        var topStudents = studentsWithAverages
             .Where(x => x.AverageGrade == maxAverage)
             .Select(x => new StudentAverageGradeDto
             {
@@ -125,6 +129,7 @@ public class QueryController(
 
         return Ok(topStudents);
     }
+
 
     /// <summary>
     /// Query 6: Retrieve information on the minimum, average, and maximum grade for each subject
