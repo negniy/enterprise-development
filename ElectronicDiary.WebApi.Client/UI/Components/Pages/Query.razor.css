@@ -1,0 +1,138 @@
+﻿.main-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+    padding: 25px;
+    background-color: #f9f9f9;
+}
+
+.table-container {
+    flex: 3;
+    min-width: 65%;
+    padding: 15px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.requests-container {
+    flex: 1;
+    min-width: 30%;
+    padding: 15px;
+    border-left: 2px solid #ccc;
+    background-color: #fafafa;
+    border-radius: 8px;
+}
+
+.request-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+
+    .request-item:hover {
+        background-color: #f0f0f0;
+        cursor: pointer;
+    }
+
+.task-container {
+    margin: 25px 0;
+    padding: 15px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+    .header-container label {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .header-container select,
+    .header-container input[type="date"] {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+    .button-container button {
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .button-container .get-task-result {
+        background-color: #4caf50;
+        color: white;
+    }
+
+        .button-container .get-task-result:hover {
+            background-color: #45a049;
+        }
+
+    .button-container .clear-task-result {
+        background-color: #f44336;
+        color: white;
+    }
+
+        .button-container .clear-task-result:hover {
+            background-color: #d32f2f;
+        }
+
+h5 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: #ffffff;
+}
+
+    .table th,
+    .table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .table th {
+        background-color: #f4f4f4;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f9f9f9;
+    }

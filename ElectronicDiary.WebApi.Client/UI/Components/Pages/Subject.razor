@@ -1,0 +1,156 @@
+﻿@page "/subjects"
+@using System.Globalization;
+@inject HttpClient Http
+
+<PageTitle>Subjects</PageTitle>
+
+<h1>Предметы</h1>
+
+<Button class="add-new-button" Clicked="@ShowAddModal" Color="Blazorise.Color.Primary" Style="width: 200px; height: 40px;">
+    Добавить предмет
+</Button>
+
+<div class="data-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Название</th>
+                <th>Год обучения</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var subject in _subjects)
+            {
+                <tr>
+                    <td>@subject.Id</td>
+                    <td>@subject.Name</td>
+                    <td>@subject.StudyYear</td>
+                    <td>
+                        <Button 
+                                class="edit-item"
+                                @onclick="@(() => ShowUpdModal(subject.Id))"
+                                Style="max-width: 89px"
+                                TextAlignment="TextAlignment.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.Edit" Style="width: 20px; height: 20px;" />
+                        </Button>
+                    </td>
+                    <td>
+                        <Button class="edit-item"
+                                @onclick="@(() => DeleteSubject(subject.Id))"
+                                Style="max-width: 89px"
+                                TextAlignment="TextAlignment.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.Delete" Style="width: 20px; height: 20px;" />
+                        </Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<Modal @ref="modalRef" >
+    <ModalContent Centered>
+        <ModalBody>
+            <div class="mb-3">
+                <label for="name">Название:</label>
+                <input type="text" id="name" @bind="newSubject.Name" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="studyYear">Год обучения:</label>
+                <input type="text" id="studyYear" @bind="newSubject.StudyYear" class="form-control" />
+            </div>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Blazorise.Color.Primary" Clicked="@(forAdd ? AddNewSubject : UpdateSubject)">
+                @(forAdd ? "Добавить" : "Изменить")
+            </Button>
+            <Button Color="Blazorise.Color.Secondary" Clicked="@CancelHandler">
+                Отмена
+            </Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    private List<Subject> _subjects = new();
+    private Modal? modalRef = null!;
+    private Subject newSubject = new() 
+    {       
+        Id = 0,
+        Name = "",
+        StudyYear = ""
+    };
+    private bool forAdd = true;
+    private string subjectUrl = "api/Subject";
+
+    private async Task UpdateMainList()
+    {
+        var response = await Http.GetFromJsonAsync<List<Subject>>(subjectUrl);
+        if (response != null)
+        {
+            _subjects = response;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateMainList();
+    }
+
+    private async Task AddNewSubject()
+    {
+        await Http.PostAsJsonAsync<Subject>(subjectUrl, newSubject);
+        await UpdateMainList();
+        await modalRef!.Hide();
+    }
+
+    private async Task DeleteSubject(int id)
+    {
+        await Http.DeleteAsync($"{subjectUrl}/{id}");
+        await UpdateMainList();
+    }
+
+    private async Task UpdateSubject()
+    {
+        await Http.PutAsJsonAsync($"{subjectUrl}/{newSubject.Id}", newSubject);
+
+        newSubject = new()
+        {
+            Id = 0,
+            Name = "",
+            StudyYear = ""
+        };
+        await UpdateMainList();
+        await modalRef!.Hide();
+    }
+
+    private async Task ShowUpdModal(int id)
+    {
+        forAdd = false;
+        var response = await Http.GetFromJsonAsync<Subject>($"{subjectUrl}/{id}");
+        if (response != null)
+        {
+            newSubject = response;
+        }
+        await modalRef!.Show();
+    }
+
+    private async Task ShowAddModal() {
+        forAdd = true;
+        newSubject = new()
+        {
+            Id = 0,
+            Name = "",
+            StudyYear = ""
+        };
+        await modalRef!.Show();
+    }
+
+    private async Task CancelHandler()
+    {
+        await modalRef!.Hide();
+    }
+}

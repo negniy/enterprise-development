@@ -1,0 +1,192 @@
+﻿@page "/students"
+@using System.Globalization;
+@inject HttpClient Http
+
+<PageTitle>Students</PageTitle>
+
+<h1>Студенты</h1>
+
+<Button class="add-new-button" Clicked="@ShowAddModal" Color="Blazorise.Color.Primary" Style="width: 200px; height: 40px;">
+    Добавить студента
+</Button>
+
+<div class="data-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Отчество</th>
+                <th>Id класса</th>
+                <th>Дата рождения</th>
+                <th>Паспорт</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in _students)
+            {
+                <tr>
+                    <td>@student.Id</td>
+                    <td>@student.FirstName</td>
+                    <td>@student.LastName</td>
+                    <td>@student.MiddleName</td>
+                    <td>@student.ClassId</td>
+                    <td>@student.BirthDate.ToString("yyyy-MM-dd")</td>
+                    <td>@student.Passport</td>
+                    <td>
+                        <Button 
+                                class="edit-item"
+                                @onclick="@(() => ShowUpdModal(student.Id))"
+                                Style="max-width: 89px"
+                                TextAlignment="TextAlignment.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.Edit" Style="width: 20px; height: 20px;" />
+                        </Button>
+                    </td>
+                    <td>
+                        <Button class="edit-item"
+                                @onclick="@(() => DeleteStudent(student.Id))"
+                                Style="max-width: 89px"
+                                TextAlignment="TextAlignment.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.Delete" Style="width: 20px; height: 20px;" />
+                        </Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<Modal @ref="modalRef" >
+    <ModalContent Centered>
+        <ModalBody>
+            <div class="mb-3">
+                <label for="firstName">Имя:</label>
+                <input type="text" id="firstName" @bind="newStudent.FirstName" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="lastName">Фамилия:</label>
+                <input type="text" id="lastName" @bind="newStudent.LastName" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="middleName">Отчество:</label>
+                <input type="text" id="middleName" @bind="newStudent.MiddleName" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="classId">Id класса:</label>
+                <input type="number" id="classId" @bind="newStudent.ClassId" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="birthDate">Дата рождения:</label>
+                <input type="date" id="birthDate" @bind="newStudent.BirthDate" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="passport">Паспорт:</label>
+                <input type="text" id="passport" @bind="newStudent.Passport" class="form-control" />
+            </div>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Blazorise.Color.Primary" Clicked="@(forAdd ? AddNewStudent : UpdateStudent)">
+                @(forAdd ? "Добавить" : "Изменить")
+            </Button>
+            <Button Color="Blazorise.Color.Secondary" Clicked="@CancelHandler">
+                Отмена
+            </Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    private List<Student> _students = new();
+    private Modal? modalRef = null!;
+    private Student newStudent = new() 
+    {       
+        Id = 0,
+        FirstName = "",
+        LastName = "",
+        MiddleName = "",
+        ClassId = 0,
+        BirthDate = DateTime.Now,
+        Passport = ""
+    };
+    private bool forAdd = true;
+    private string studentUrl = "api/Student";
+
+    private async Task UpdateMainList()
+    {
+        var response = await Http.GetFromJsonAsync<List<Student>>(studentUrl);
+        if (response != null)
+        {
+            _students = response;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateMainList();
+    }
+
+    private async Task AddNewStudent()
+    {
+        await Http.PostAsJsonAsync<Student>(studentUrl, newStudent);
+        await UpdateMainList();
+        await modalRef!.Hide();
+    }
+
+    private async Task DeleteStudent(int id)
+    {
+        await Http.DeleteAsync($"{studentUrl}/{id}");
+        await UpdateMainList();
+    }
+
+    private async Task UpdateStudent()
+    {
+        await Http.PutAsJsonAsync($"{studentUrl}/{newStudent.Id}", newStudent);
+
+        newStudent = new()
+        {
+            Id = 0,
+            FirstName = "",
+            LastName = "",
+            MiddleName = "",
+            ClassId = 0,
+            BirthDate = DateTime.Now,
+            Passport = ""
+        };
+        await UpdateMainList();
+        await modalRef!.Hide();
+    }
+
+    private async Task ShowUpdModal(int id)
+    {
+        forAdd = false;
+        var response = await Http.GetFromJsonAsync<Student>($"{studentUrl}/{id}");
+        if (response != null)
+        {
+            newStudent = response;
+        }
+        await modalRef!.Show();
+    }
+
+    private async Task ShowAddModal() {
+        forAdd = true;
+        newStudent = new()
+        {
+            Id = 0,
+            FirstName = "",
+            LastName = "",
+            MiddleName = "",
+            ClassId = 0,
+            BirthDate = DateTime.Now,
+            Passport = ""
+        }; 
+        await modalRef!.Show();
+    }
+
+    private async Task CancelHandler()
+    {
+        await modalRef!.Hide();
+    }
+}
