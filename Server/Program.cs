@@ -37,7 +37,21 @@ builder.Services.AddTransient<IRepository<Grade, int>, GradeRepository>();
 
 builder.Services.AddAutoMapper(typeof(Mapping));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecific", policy =>
+    {
+        policy.WithOrigins("http://localhost:5081")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+
+
 var app = builder.Build();
+
+app.UseCors("AllowSpecific");
 
 if (app.Environment.IsDevelopment())
 {

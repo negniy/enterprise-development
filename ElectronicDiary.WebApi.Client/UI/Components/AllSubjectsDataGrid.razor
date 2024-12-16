@@ -1,0 +1,40 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject NavigationManager NavManager
+@using SubjectModel = ElectronicDiary.WebApi.Client.Subject
+
+<Card>
+    <CardBody>
+        <DataGrid TItem="SubjectModel"
+                    Data="Subjects"
+                    Responsive
+                    Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="SubjectModel"
+                                Field="@nameof(SubjectModel.Name)"
+                                Caption="Название">
+                </DataGridColumn>
+                <DataGridColumn TItem="SubjectModel"
+                                Field="@nameof(SubjectModel.StudyYear)"
+                                Caption="Год обучения">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@code {
+    private IEnumerable<SubjectModel> Subjects { get; set; }
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Subjects = await ElectronicDiaryApi.GetAllSubjectsQuery();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ошибка при загрузке предметов: {ex.Message}";
+        }
+    }
+}

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -30,7 +30,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <OpenApiReference Include="Api\swagger.json" CodeGenerator="NSwagCSharp" ClassName="ElectronicDiaryApi" />
+    <OpenApiReference Include="Api\swagger.json" CodeGenerator="NSwagCSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="UI\Components\StudentsInClassDataGrid.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="UI\Pages\Student.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="UI\Pages\EditStudent.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
   </ItemGroup>
 
 </Project>

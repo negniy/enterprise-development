@@ -1,5 +1,113 @@
-﻿<h3>StudentDataGrid</h3>
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject NavigationManager NavManager
+@using StudentModel = ElectronicDiary.WebApi.Client.Student
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Ученики</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="OpenCreateModal">
+                    Добавить ученика
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="StudentModel"
+                  Data="Students"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn Width="150px"
+                                TItem="StudentModel"
+                                Field="@nameof(StudentModel)"
+                                Caption="Действия">
+                    <DisplayTemplate>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Действия
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OpenEditPageAsync(context)">
+                                    Редактировать
+                                </DropdownItem>
+                                <DropdownItem Clicked="() => DeleteStudentAsync(context)">
+                                    Удалить
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel"
+                                Field="@nameof(StudentModel.Name)"
+                                Caption="Имя">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel"
+                                Field="@nameof(StudentModel.Surname)"
+                                Caption="Фамилия">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel"
+                                Field="@nameof(StudentModel.Patronymic)"
+                                Caption="Отчество">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel" Caption="ID класса">
+                    <DisplayTemplate>
+                        @context.Class.Id
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel"
+                                Field="@nameof(StudentModel.Birthday)"
+                                Caption="ДР">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel"
+                                Field="@nameof(StudentModel.Passport)"
+                                Caption="Паспорт">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<StudentCreateModal @ref="StudentCreateModal" OnStudentAdded="@HandleStudentAdded" />
 
 @code {
+    [Parameter]
+    public EventCallback OnDataChanged { get; set; }
 
+    private IEnumerable<StudentModel> Students { get; set; }
+
+    private StudentCreateModal StudentCreateModal { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshStudentCollection();
+        await base.OnInitializedAsync();
+    }
+
+    private void OpenEditPageAsync(StudentModel context)
+    {
+        NavManager.NavigateTo($"students/{context.Id}");
+    }
+
+    private async Task DeleteStudentAsync(StudentModel context)
+    {
+        await ElectronicDiaryApi.DeleteStudent(context.Id);
+        await RefreshStudentCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task HandleStudentAdded()
+    {
+        await RefreshStudentCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task OpenCreateModal() => await StudentCreateModal.Show();
+
+    private async Task RefreshStudentCollection()
+    {
+        Students = await ElectronicDiaryApi.GetAllStudents();
+    }
 }

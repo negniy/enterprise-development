@@ -1,0 +1,40 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject NavigationManager NavManager
+
+<Card>
+    <CardBody>
+        <DataGrid TItem="SubjectGradeStatisticsDto"
+                    Data="Statistics"
+                    Responsive
+                    Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="SubjectGradeStatisticsDto"
+                                Field="@nameof(SubjectGradeStatisticsDto.SubjectName)"
+                                Caption="Предмет">
+                </DataGridColumn>
+                <DataGridColumn TItem="SubjectGradeStatisticsDto"
+                                Field="@nameof(SubjectGradeStatisticsDto.MinGrade)"
+                                Caption="Мин. Оценка">
+                </DataGridColumn>
+                <DataGridColumn TItem="SubjectGradeStatisticsDto"
+                                Field="@nameof(SubjectGradeStatisticsDto.MaxGrade)"
+                                Caption="Макс. Оценка">
+                </DataGridColumn>
+                <DataGridColumn TItem="SubjectGradeStatisticsDto"
+                                Field="@nameof(SubjectGradeStatisticsDto.AverageGrade)"
+                                Caption="Средняя Оценка">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@code {
+    private IEnumerable<SubjectGradeStatisticsDto> Statistics { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Statistics = await ElectronicDiaryApi.GetSubjectGradesStatistics();
+       
+    }
+}

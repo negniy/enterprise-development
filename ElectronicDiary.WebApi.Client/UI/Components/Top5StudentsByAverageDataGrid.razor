@@ -1,0 +1,43 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject NavigationManager NavManager
+
+<Card>
+    <CardBody>
+        <DataGrid TItem="StudentAverageGradeDto"
+                    Data="TopStudents"
+                    Responsive
+                    Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="StudentAverageGradeDto"
+                                Field="@nameof(StudentAverageGradeDto.StudentId)"
+                                Caption="ID Студента">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentAverageGradeDto"
+                                Field="@nameof(StudentAverageGradeDto.Surname)"
+                                Caption="Фамилия">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentAverageGradeDto"
+                                Field="@nameof(StudentAverageGradeDto.Name)"
+                                Caption="Имя">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentAverageGradeDto"
+                                Field="@nameof(StudentAverageGradeDto.Patronymic)"
+                                Caption="Отчество">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentAverageGradeDto"
+                                Field="@nameof(StudentAverageGradeDto.AverageGrade)"
+                                Caption="Средний Балл">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@code {
+    private IEnumerable<StudentAverageGradeDto> TopStudents { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        TopStudents = await ElectronicDiaryApi.GetTop5StudentsByAverage();
+    }
+}

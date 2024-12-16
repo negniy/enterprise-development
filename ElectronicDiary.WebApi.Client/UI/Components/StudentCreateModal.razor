@@ -1,0 +1,60 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+
+<Modal @ref="StudentModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Новый ученик</ModalTitle>
+                <CloseButton Clicked="CloseStudentModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>ID предмета</FieldLabel>
+                    <NumericEdit @bind-Value="NewStudent.Name" />
+                </Field>
+                <Field>
+                    <FieldLabel>ID студента</FieldLabel>
+                    <NumericEdit @bind-Value="NewStudent.Surname" />
+                </Field>
+                <Field>
+                    <FieldLabel>Значение оценки</FieldLabel>
+                    <NumericEdit @bind-Value="NewStudent.Patronymic" />
+                </Field>
+                <Field>
+                    <FieldLabel>Дата</FieldLabel>
+                    <DateEdit @bind-Date="NewStudent.Birthday" />
+                </Field>
+                <Field>
+                    <FieldLabel>Дата</FieldLabel>
+                    <DateEdit @bind-Date="NewStudent.Passport" />
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseStudentModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="CreateStudentAsync">Создать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnStudentAdded { get; set; }
+
+    private Modal StudentModal { get; set; } = new();
+
+    private StudentDto NewStudent { get; set; } = new();
+
+    public async Task Show() => await StudentModal.Show();
+
+    private async Task CloseStudentModalAsync() => await StudentModal.Hide();
+
+    private async Task CreateStudentAsync()
+    {
+        await ElectronicDiaryApi.CreateStudent(NewStudent);
+        await StudentModal.Hide();
+        await OnStudentAdded.InvokeAsync();
+    }
+}

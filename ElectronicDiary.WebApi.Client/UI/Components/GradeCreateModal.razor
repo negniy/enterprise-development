@@ -1,0 +1,56 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+
+<Modal @ref="GradeModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Новая оценка</ModalTitle>
+                <CloseButton Clicked="CloseGradeModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>ID предмета</FieldLabel>
+                    <NumericEdit @bind-Value="NewGrade.SubjectId" />
+                </Field>
+                <Field>
+                    <FieldLabel>ID студента</FieldLabel>
+                    <NumericEdit @bind-Value="NewGrade.StudentId" />
+                </Field>
+                <Field>
+                    <FieldLabel>Значение оценки</FieldLabel>
+                    <NumericEdit @bind-Value="NewGrade.GradeValue" />
+                </Field>
+                <Field>
+                    <FieldLabel>Дата</FieldLabel>
+                    <DateEdit @bind-Date="NewGrade.Date" />
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseGradeModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="CreateGradeAsync">Создать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnGradeAdded { get; set; }
+
+    private Modal GradeModal { get; set; } = new();
+
+    private GradeDto NewGrade { get; set; } = new();
+
+    public async Task Show() => await GradeModal.Show();
+
+    private async Task CloseGradeModalAsync() => await GradeModal.Hide();
+
+    private async Task CreateGradeAsync()
+    {
+        await ElectronicDiaryApi.CreateGrade(NewGrade);
+        await GradeModal.Hide();
+        await OnGradeAdded.InvokeAsync();
+    }
+}

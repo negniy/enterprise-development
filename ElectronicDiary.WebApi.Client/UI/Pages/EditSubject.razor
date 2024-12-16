@@ -1,0 +1,71 @@
+﻿@page "/subjects/{Id}"
+
+@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject IJSRuntime JsRuntime
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Редактировать предмет</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="UpdateSubjectAsync">
+                    Сохранить
+                </Button>
+                <Button Color="Color.Danger" Clicked="DeleteSubjectAsync">
+                    Удалить
+                </Button>
+                <Button Color="Color.Secondary" onclick="history.back();">
+                    Закрыть
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+
+    <CardBody>
+        <Field>
+            <FieldLabel>Название предмета</FieldLabel>
+            <NumericEdit @bind-Value="Subject.Name" />
+        </Field>
+        <Field>
+            <FieldLabel>Год обучения</FieldLabel>
+            <NumericEdit @bind-Value="Subject.StudyYear" />
+        </Field>
+    </CardBody>
+</Card>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "";
+
+    private int SubjectId { get; set; }
+
+    private SubjectDto Subject { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!int.TryParse(Id, out var id))
+            throw new Exception("Некорректный идентификатор");
+        SubjectId = id;
+        await ElectronicDiaryApi.GetSubject(SubjectId);
+        await base.OnInitializedAsync();
+    }
+
+    private async Task DeleteSubjectAsync()
+    {
+        await ElectronicDiaryApi.DeleteSubject(SubjectId);
+        await JsRuntime.InvokeVoidAsync("history.back");
+    }
+
+    private async Task UpdateSubjectAsync()
+    {
+        var updatedSubject = new SubjectDto
+            {
+                Name = Subject.Name,
+                StudyYear = Subject.StudyYear
+            };
+        await ElectronicDiaryApi.UpdateSubject(SubjectId, updatedSubject);
+        await JsRuntime.InvokeVoidAsync("history.back");
+    }
+}

@@ -1,0 +1,58 @@
+﻿@page "/queries"
+@inject NavigationManager NavigationManager
+
+<h3>Специальные Запросы</h3>
+
+<div class="button-group">
+    <Button Color="Color.Primary" Clicked="NavigateToAllSubjects" class="d-block mb-2">
+        Вывести все предметы
+    </Button>
+    <Button Color="Color.Primary" Clicked="NavigateToStudentsInClass" class="d-block mb-2">
+        Студенты в классе
+    </Button>
+    <Button Color="Color.Primary" Clicked="NavigateToStudentsByDate" class="d-block mb-2">
+        Студенты по дате
+    </Button>
+    <Button Color="Color.Primary" Clicked="NavigateToTop5StudentsByAverage" class="d-block mb-2">
+        Топ 5 студентов по среднему баллу
+    </Button>
+    <Button Color="Color.Primary" Clicked="NavigateToStudentsWithMaxAverageByPeriod" class="d-block mb-2">
+        Студенты с максимальным средним за период
+    </Button>
+    <Button Color="Color.Primary" Clicked="NavigateToSubjectGradesStatistics" class="d-block">
+        Статистика оценок по предметам
+    </Button>
+</div>
+
+
+@code {
+    private void NavigateToAllSubjects()
+    {
+        NavigationManager.NavigateTo("/all_subjects");
+    }
+
+    private void NavigateToStudentsInClass()
+    {
+        NavigationManager.NavigateTo("/students_in_class");
+    }
+
+    private void NavigateToStudentsByDate()
+    {
+        NavigationManager.NavigateTo("/students_by_date");
+    }
+
+    private void NavigateToTop5StudentsByAverage()
+    {
+        NavigationManager.NavigateTo("/top_5_students_by_average");
+    }
+
+    private void NavigateToStudentsWithMaxAverageByPeriod()
+    {
+        NavigationManager.NavigateTo("/students_with_max_average_by_period");
+    }
+
+    private void NavigateToSubjectGradesStatistics()
+    {
+        NavigationManager.NavigateTo("/subject_grades_statistics");
+    }
+}

@@ -1,0 +1,71 @@
+﻿@page "/classes/{Id}"
+
+@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject IJSRuntime JsRuntime
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Редактировать оценку</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="UpdateClassAsync">
+                    Сохранить
+                </Button>
+                <Button Color="Color.Danger" Clicked="DeleteClassAsync">
+                    Удалить
+                </Button>
+                <Button Color="Color.Secondary" onclick="history.back();">
+                    Закрыть
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+
+    <CardBody>
+        <Field>
+            <FieldLabel>Номер класса</FieldLabel>
+            <NumericEdit @bind-Value="Class.Number" />
+        </Field>
+        <Field>
+            <FieldLabel>Литера класса</FieldLabel>
+            <NumericEdit @bind-Value="Class.Letters" />
+        </Field>
+    </CardBody>
+</Card>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "";
+
+    private int ClassId { get; set; }
+
+    private ClassDto Class { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!int.TryParse(Id, out var id))
+            throw new Exception("Некорректный идентификатор");
+        ClassId = id;
+        await ElectronicDiaryApi.GetClass(ClassId);
+        await base.OnInitializedAsync();
+    }
+
+    private async Task DeleteClassAsync()
+    {
+        await ElectronicDiaryApi.DeleteClass(ClassId);
+        await JsRuntime.InvokeVoidAsync("history.back");
+    }
+
+    private async Task UpdateClassAsync()
+    {
+        var updatedClass = new ClassDto
+            {
+                Number = Class.Number,
+                Letters = Class.Letters
+            };
+        await ElectronicDiaryApi.UpdateClass(ClassId, updatedClass);
+        await JsRuntime.InvokeVoidAsync("history.back");
+    }
+}

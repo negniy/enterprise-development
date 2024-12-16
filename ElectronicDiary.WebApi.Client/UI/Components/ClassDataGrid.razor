@@ -1,0 +1,96 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject NavigationManager NavManager
+@using ClassModel = ElectronicDiary.WebApi.Client.Class
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Классы</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="OpenCreateModal">
+                    Добавить класс
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="ClassModel"
+                  Data="Classes"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn Width="150px"
+                                TItem="ClassModel"
+                                Field="@nameof(ClassModel.Id)"
+                                Caption="Действия">
+                    <DisplayTemplate>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Действия
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OpenEditPageAsync(context)">
+                                    Редактировать
+                                </DropdownItem>
+                                <DropdownItem Clicked="() => DeleteClassAsync(context)">
+                                    Удалить
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="ClassModel"
+                                Field="@nameof(ClassModel.Number)"
+                                Caption="Номер">
+                </DataGridColumn>
+                <DataGridColumn TItem="ClassModel"
+                                Field="@nameof(ClassModel.Letters)"
+                                Caption="Литера">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<ClassCreateModal @ref="ClassCreateModal" OnClassAdded="@HandleClassAdded"/>
+
+@code {
+    [Parameter]
+    public EventCallback OnDataChanged { get; set; }
+
+    private IEnumerable<ClassModel> Classes { get; set; }
+
+    private ClassCreateModal ClassCreateModal { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshClassCollection();
+        await base.OnInitializedAsync();
+    }
+
+    private void OpenEditPageAsync(ClassModel context)
+    {
+        NavManager.NavigateTo($"classes/{context.Id}");
+    }
+
+    private async Task DeleteClassAsync(ClassModel context)
+    {
+        await ElectronicDiaryApi.DeleteClass(context.Id);
+        await RefreshClassCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task HandleClassAdded()
+    {
+        await RefreshClassCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task OpenCreateModal() => await ClassCreateModal.Show();
+
+    private async Task RefreshClassCollection()
+    {
+        Classes = await ElectronicDiaryApi.GetAllClasses();
+    }
+}

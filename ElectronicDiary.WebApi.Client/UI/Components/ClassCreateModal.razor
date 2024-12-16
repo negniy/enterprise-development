@@ -1,0 +1,48 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+
+<Modal @ref="ClassModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Новый класс</ModalTitle>
+                <CloseButton Clicked="CloseClassModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Номер класса</FieldLabel>
+                    <NumericEdit @bind-Value="NewClass.Number" />
+                </Field>
+                <Field>
+                    <FieldLabel>Литера класса</FieldLabel>
+                    <DateEdit @bind-Date="NewClass.Letters" />
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseClassModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="CreateClassAsync">Создать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnClassAdded { get; set; }
+
+    private Modal ClassModal { get; set; } = new();
+
+    private ClassDto NewClass { get; set; } = new();
+
+    public async Task Show() => await ClassModal.Show();
+
+    private async Task CloseClassModalAsync() => await ClassModal.Hide();
+
+    private async Task CreateClassAsync()
+    {
+        await ElectronicDiaryApi.CreateClass(NewClass);
+        await ClassModal.Hide();
+        await OnClassAdded.InvokeAsync();
+    }
+}

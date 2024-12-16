@@ -1,0 +1,106 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject NavigationManager NavManager
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Оценки</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="OpenCreateModal">
+                    Добавить оценку
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="Grade"
+                  Data="Grades"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn Width="150px"
+                                TItem="Grade"
+                                Field="@nameof(Grade.Id)"
+                                Caption="Действия">
+                    <DisplayTemplate>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Действия
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OpenEditPageAsync(context)">
+                                    Редактировать
+                                </DropdownItem>
+                                <DropdownItem Clicked="() => DeleteGradeAsync(context)">
+                                    Удалить
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="Grade" Caption="ID предмета">
+                    <DisplayTemplate>
+                        @context.Subject.Id
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="Grade" Caption="ID студента">
+                    <DisplayTemplate>
+                        @context.Student.Id
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="Grade"
+                                Field="@nameof(Grade.GradeValue)"
+                                Caption="Оценка">
+                </DataGridColumn>
+                <DataGridColumn TItem="Grade"
+                                Field="@nameof(Grade.Date)"
+                                Caption="Дата">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<GradeCreateModal @ref="GradeCreateModal" OnGradeAdded="@HandleGradeAdded" />
+
+@code {
+    [Parameter]
+    public EventCallback OnDataChanged { get; set; }
+
+    private IEnumerable<Grade> Grades { get; set; }
+
+    private GradeCreateModal GradeCreateModal { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshGradeCollection();
+        await base.OnInitializedAsync();
+    }
+
+    private void OpenEditPageAsync(Grade context)
+    {
+        NavManager.NavigateTo($"grades/{context.Id}");
+    }
+
+    private async Task DeleteGradeAsync(Grade context)
+    {
+        await ElectronicDiaryApi.DeleteGrade(context.Id);
+        await RefreshGradeCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task HandleGradeAdded()
+    {
+        await RefreshGradeCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task OpenCreateModal() => await GradeCreateModal.Show();
+
+    private async Task RefreshGradeCollection()
+    {
+        Grades = await ElectronicDiaryApi.GetAllGrades();
+    }
+}

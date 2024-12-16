@@ -1,0 +1,80 @@
+﻿@page "/grades/{Id}"
+
+@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject IJSRuntime JsRuntime
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Редактировать оценку</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="UpdateGradeAsync">
+                    Сохранить
+                </Button>
+                <Button Color="Color.Danger" Clicked="DeleteGradeAsync">
+                    Удалить
+                </Button>
+                <Button Color="Color.Secondary" onclick="history.back();">
+                    Закрыть
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+
+    <CardBody>
+        <Field>
+            <FieldLabel>ID предмета</FieldLabel>
+            <NumericEdit @bind-Value="Grade.SubjectId" />
+        </Field>
+        <Field>
+            <FieldLabel>ID студента</FieldLabel>
+            <NumericEdit @bind-Value="Grade.StudentId" />
+        </Field>
+        <Field>
+            <FieldLabel>Значение оценки</FieldLabel>
+            <NumericEdit @bind-Value="Grade.GradeValue" />
+        </Field>
+        <Field>
+            <FieldLabel>Дата</FieldLabel>
+            <DateEdit @bind-Date="Grade.Date" />
+        </Field>
+    </CardBody>
+</Card>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "";
+
+    private int GradeId { get; set; }
+    private GradeDto Grade { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!int.TryParse(Id, out var id))
+            throw new Exception("Некорректный идентификатор");
+        GradeId = id;
+        await ElectronicDiaryApi.GetGrade(GradeId);
+        await base.OnInitializedAsync();
+    }
+
+    private async Task DeleteGradeAsync()
+    {
+        await ElectronicDiaryApi.DeleteGrade(GradeId);
+        await JsRuntime.InvokeVoidAsync("history.back");
+    }
+
+    private async Task UpdateGradeAsync()
+    {
+        var updatedGrade = new GradeDto
+            {
+                SubjectId = Grade.SubjectId,
+                StudentId = Grade.StudentId,
+                GradeValue = Grade.GradeValue,
+                Date = Grade.Date
+            };
+        await ElectronicDiaryApi.UpdateGrade(GradeId, updatedGrade);
+        await JsRuntime.InvokeVoidAsync("history.back");
+    }
+}

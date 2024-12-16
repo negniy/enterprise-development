@@ -1,0 +1,91 @@
+﻿@page "/students/{Id}"
+
+@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject IJSRuntime JsRuntime
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Редактировать студента</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="UpdateStudentAsync">
+                    Сохранить
+                </Button>
+                <Button Color="Color.Danger" Clicked="DeleteStudentAsync">
+                    Удалить
+                </Button>
+                <Button Color="Color.Secondary" onclick="history.back();">
+                    Закрыть
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+
+    <CardBody>
+        <Field>
+            <FieldLabel>Имя</FieldLabel>
+            <NumericEdit @bind-Value="Student.Name" />
+        </Field>
+        <Field>
+            <FieldLabel>Фамилия</FieldLabel>
+            <NumericEdit @bind-Value="Student.Surname" />
+        </Field>
+        <Field>
+            <FieldLabel>Отчество</FieldLabel>
+            <NumericEdit @bind-Value="Student.Patronymic" />
+        </Field>
+        <Field>
+            <FieldLabel>Id класса</FieldLabel>
+            <NumericEdit @bind-Value="Student.ClassId" />
+        </Field>
+        <Field>
+            <FieldLabel>ДР</FieldLabel>
+            <NumericEdit @bind-Value="Student.Birthday" />
+        </Field>
+        <Field>
+            <FieldLabel>Паспорт</FieldLabel>
+            <NumericEdit @bind-Value="Student.Passport" />
+        </Field>
+    </CardBody>
+</Card>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "";
+
+    private int StudentId { get; set; }
+
+    private StudentDto Student { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!int.TryParse(Id, out var id))
+            throw new Exception("Некорректный идентификатор");
+        StudentId = id;
+        await ElectronicDiaryApi.GetStudent(StudentId);
+        await base.OnInitializedAsync();
+    }
+
+    private async Task DeleteStudentAsync()
+    {
+        await ElectronicDiaryApi.DeleteStudent(StudentId);
+        await JsRuntime.InvokeVoidAsync("history.back");
+    }
+
+    private async Task UpdateStudentAsync()
+    {
+        var updatedStudent = new StudentDto
+            {
+                Name = Student.Name,
+                Surname = Student.Surname,
+                Patronymic = Student.Patronymic,
+                ClassId = Student.ClassId,
+                Birthday = Student.Birthday,
+                Passport = Student.Passport
+            };
+        await ElectronicDiaryApi.UpdateStudent(StudentId, updatedStudent);
+        await JsRuntime.InvokeVoidAsync("history.back");
+    }
+}

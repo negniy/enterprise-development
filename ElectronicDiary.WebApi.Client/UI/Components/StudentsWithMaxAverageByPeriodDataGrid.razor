@@ -1,0 +1,68 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject NavigationManager NavManager
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Студенты в классе</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <InputDate @bind-Value="filterModel.StartDate" Placeholder="Введите дату начала" />
+                <InputDate @bind-Value="filterModel.EndDate" Placeholder="Введите дату конца" />
+                <Button Color="Color.Primary" Clicked="LoadStudents">
+                    Применить фильтр
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="StudentAverageGradeDto"
+                    Data="TopStudents"
+                    Responsive
+                    Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="StudentAverageGradeDto"
+                                Field="@nameof(StudentAverageGradeDto.StudentId)"
+                                Caption="ID Студента">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentAverageGradeDto"
+                                Field="@nameof(StudentAverageGradeDto.Surname)"
+                                Caption="Фамилия">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentAverageGradeDto"
+                                Field="@nameof(StudentAverageGradeDto.Name)"
+                                Caption="Имя">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentAverageGradeDto"
+                                Field="@nameof(StudentAverageGradeDto.Patronymic)"
+                                Caption="Отчество">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentAverageGradeDto"
+                                Field="@nameof(StudentAverageGradeDto.AverageGrade)"
+                                Caption="Средний Балл">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@code {
+    private class FilterModel
+    {
+        public DateOnly StartDate { get; set; }
+        public DateOnly EndDate { get; set; }
+    }
+
+    private FilterModel filterModel = new();
+    private IEnumerable<StudentAverageGradeDto> TopStudents { get; set; }
+
+    private async Task LoadStudents()
+    {
+        if (filterModel.StartDate > filterModel.EndDate)
+        {
+            return;
+        }
+        TopStudents = await ElectronicDiaryApi.GetStudentsWithMaxAverageByPeriod(filterModel.StartDate, filterModel.EndDate);
+    }
+}

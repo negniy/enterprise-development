@@ -1,0 +1,48 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+
+<Modal @ref="SubjectModal">
+    <ModalContent Centered>
+        <Form>
+            <ModalHeader>
+                <ModalTitle>Новыйц предмет</ModalTitle>
+                <CloseButton Clicked="CloseSubjectModalAsync" />
+            </ModalHeader>
+
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Название предмета</FieldLabel>
+                    <NumericEdit @bind-Value="NewSubject.Name" />
+                </Field>
+                <Field>
+                    <FieldLabel>Год обучения</FieldLabel>
+                    <NumericEdit @bind-Value="NewSubject.StudyYear" />
+                </Field>
+            </ModalBody>
+
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseSubjectModalAsync">Отмена</Button>
+                <Button Color="Color.Primary" Clicked="CreateSubjectAsync">Создать</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public EventCallback OnSubjectAdded { get; set; }
+
+    private Modal SubjectModal { get; set; } = new();
+
+    private SubjectDto NewSubject { get; set; } = new();
+
+    public async Task Show() => await SubjectModal.Show();
+
+    private async Task CloseSubjectModalAsync() => await SubjectModal.Hide();
+
+    private async Task CreateSubjectAsync()
+    {
+        await ElectronicDiaryApi.CreateSubject(NewSubject);
+        await SubjectModal.Hide();
+        await OnSubjectAdded.InvokeAsync();
+    }
+}

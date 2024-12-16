@@ -1,0 +1,76 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject NavigationManager NavManager
+@using StudentModel = ElectronicDiary.WebApi.Client.Student
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Студенты в классе</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <InputNumber @bind-Value="filterModel.ClassId" Placeholder="Введите ID класса" />
+                <Button Color="Color.Primary" Clicked="LoadStudents">
+                    Применить фильтр
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="StudentModel"
+                  Data="Students"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="StudentModel"
+                                Field="@nameof(StudentModel.Id)"
+                                Caption="ID">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel"
+                                Field="@nameof(StudentModel.Name)"
+                                Caption="Имя">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel"
+                                Field="@nameof(StudentModel.Surname)"
+                                Caption="Фамилия">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel"
+                                Field="@nameof(StudentModel.Patronymic)"
+                                Caption="Отчество">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel" Caption="Номер класса">
+                    <DisplayTemplate>
+                        @context.Class.Number
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentModel" Caption="Литера класса">
+                    <DisplayTemplate>
+                        @context.Class.Letters
+                    </DisplayTemplate>
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@code {
+    private class FilterModel
+    {
+        public int ClassId { get; set; }
+    }
+
+    private FilterModel filterModel = new();
+    private IEnumerable<StudentModel> Students { get; set; }
+
+    private async Task LoadStudents()
+    {
+        if (filterModel.ClassId > 0)
+        {
+            Students = await ElectronicDiaryApi.GetStudentsInClass(filterModel.ClassId);
+        }
+        else
+        {
+            Students = Enumerable.Empty<StudentModel>();
+        }
+    }
+}

@@ -1,0 +1,96 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject NavigationManager NavManager
+@using SubjectModel = ElectronicDiary.WebApi.Client.Subject
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Предметы</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary" Clicked="OpenCreateModal">
+                    Добавить предмет
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="SubjectModel"
+                  Data="Subjects"
+                  Responsive
+                  Striped>
+            <DataGridColumns>
+                <DataGridColumn Width="150px"
+                                TItem="SubjectModel"
+                                Field="@nameof(SubjectModel)"
+                                Caption="Действия">
+                    <DisplayTemplate>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Действия
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem Clicked="() => OpenEditPageAsync(context)">
+                                    Редактировать
+                                </DropdownItem>
+                                <DropdownItem Clicked="() => DeleteSubjectAsync(context)">
+                                    Удалить
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="SubjectModel"
+                                Field="@nameof(SubjectModel.Name)"
+                                Caption="Название">
+                </DataGridColumn>
+                <DataGridColumn TItem="SubjectModel"
+                                Field="@nameof(SubjectModel.StudyYear)"
+                                Caption="Год обучения">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<SubjectCreateModal @ref="SubjectCreateModal" OnSubjectAdded="@HandleSubjectAdded" />
+
+@code {
+    [Parameter]
+    public EventCallback OnDataChanged { get; set; }
+
+    private IEnumerable<SubjectModel> Subjects { get; set; }
+
+    private SubjectCreateModal SubjectCreateModal { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshSubjectCollection();
+        await base.OnInitializedAsync();
+    }
+
+    private void OpenEditPageAsync(SubjectModel context)
+    {
+        NavManager.NavigateTo($"subjects/{context.Id}");
+    }
+
+    private async Task DeleteSubjectAsync(SubjectModel context)
+    {
+        await ElectronicDiaryApi.DeleteSubject(context.Id);
+        await RefreshSubjectCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task HandleSubjectAdded()
+    {
+        await RefreshSubjectCollection();
+        await OnDataChanged.InvokeAsync();
+    }
+
+    private async Task OpenCreateModal() => await SubjectCreateModal.Show();
+
+    private async Task RefreshSubjectCollection()
+    {
+        Subjects = await ElectronicDiaryApi.GetAllSubjects();
+    }
+}

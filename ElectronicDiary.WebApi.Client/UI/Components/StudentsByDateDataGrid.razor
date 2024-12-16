@@ -1,0 +1,67 @@
+﻿@inject IElectronicDiaryWrapper ElectronicDiaryApi
+@inject NavigationManager NavManager
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h4>Студенты в классе</h4>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <InputDate @bind-Value="filterModel.Date" Placeholder="Введите дату" />
+                <Button Color="Color.Primary" Clicked="LoadStudents">
+                    Применить фильтр
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="StudentGradesDto"
+                    Data="StudentGrades"
+                    Responsive
+                    Striped>
+            <DataGridColumns>
+                <DataGridColumn TItem="StudentGradesDto"
+                                Field="@nameof(StudentGradesDto.Surname)"
+                                Caption="Фамилия">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentGradesDto"
+                                Field="@nameof(StudentGradesDto.Name)"
+                                Caption="Имя">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentGradesDto"
+                                Field="@nameof(StudentGradesDto.Patronymic)"
+                                Caption="Отчество">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentGradesDto"
+                                Field="@nameof(StudentGradesDto.Subject)"
+                                Caption="Предмет">
+                </DataGridColumn>
+                <DataGridColumn TItem="StudentGradesDto"
+                                Field="@nameof(StudentGradesDto.Grade)"
+                                Caption="Оценка">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@code {
+    private class FilterModel
+    {
+        public DateOnly Date { get; set; }
+
+        public FilterModel()
+        {
+            Date = new DateOnly(1900, 1, 1);
+        }
+    }
+
+    private FilterModel filterModel = new();
+    private IEnumerable<StudentGradesDto> StudentGrades { get; set; }
+
+    private async Task LoadStudents()
+    {
+         StudentGrades = await ElectronicDiaryApi.GetStudentsByDate(filterModel.Date);
+    }
+}
