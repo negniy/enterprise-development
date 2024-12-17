@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <OpenApiReference Include="Api\swagger.json" CodeGenerator="NSwagCSharp" ClassName="ElectronicDiaryApi" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Include="Blazorise" Version="1.6.2" />
 	<PackageReference Include="Blazorise.Bootstrap5" Version="1.6.2" />
 	<PackageReference Include="Blazorise.Components" Version="1.6.2" />
@@ -27,10 +31,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <OpenApiReference Include="Api\swagger.json" CodeGenerator="NSwagCSharp" />
   </ItemGroup>
 
   <ItemGroup>

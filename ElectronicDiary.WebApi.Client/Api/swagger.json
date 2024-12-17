@@ -361,7 +361,7 @@
         }
       }
     },
-    "/api/Query/all_subjects": {
+    "/api/Query/allSubjects": {
       "get": {
         "tags": [
           "Query"
@@ -400,7 +400,7 @@
         }
       }
     },
-    "/api/Query/students_in_class": {
+    "/api/Query/studentsInClass": {
       "get": {
         "tags": [
           "Query"
@@ -450,7 +450,7 @@
         }
       }
     },
-    "/api/Query/students_by_date": {
+    "/api/Query/studentsByDate": {
       "get": {
         "tags": [
           "Query"
@@ -500,7 +500,7 @@
         }
       }
     },
-    "/api/Query/top_5_students_by_average": {
+    "/api/Query/top5StudentsByAverage": {
       "get": {
         "tags": [
           "Query"
@@ -539,7 +539,7 @@
         }
       }
     },
-    "/api/Query/students_with_max_average_by_period": {
+    "/api/Query/studentsWithMaxAverageByPeriod": {
       "get": {
         "tags": [
           "Query"
@@ -598,7 +598,7 @@
         }
       }
     },
-    "/api/Query/subject_grades_statistics": {
+    "/api/Query/subjectGradesStatistics": {
       "get": {
         "tags": [
           "Query"

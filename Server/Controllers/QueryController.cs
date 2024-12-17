@@ -16,7 +16,7 @@ public class QueryController(
     /// <summary>
     /// Query 1: Retrieve information about all subjects
     /// </summary>
-    [HttpGet("all_subjects")]
+    [HttpGet("allSubjects")]
     public async Task<ActionResult<IEnumerable<Subject>>> GetAllSubjects()
     {
         var subjects = await subjectRepository.GetAll();
@@ -27,7 +27,7 @@ public class QueryController(
     /// Query 2: Retrieve information about all students in a specified class by its identifier, sorted by full name
     /// </summary>
     /// <param name="classId">Class identifier</param>
-    [HttpGet("students_in_class")]
+    [HttpGet("studentsInClass")]
     public async Task<ActionResult<IEnumerable<Student>>> GetStudentsInClass(int classId)
     {
         var students = (await studentRepository.GetAll())
@@ -44,7 +44,7 @@ public class QueryController(
     /// Query 3: Retrieve information about all students who received grades on a specified date
     /// </summary>
     /// <param name="date">Date of the grades</param>
-    [HttpGet("students_by_date")]
+    [HttpGet("studentsByDate")]
     public async Task<ActionResult<IEnumerable<StudentGradesDto>>> GetStudentsByDate(DateOnly date)
     {
         var studentsWithGrades = (await gradeRepository.GetAll())
@@ -67,7 +67,7 @@ public class QueryController(
     /// <summary>
     /// Query 4: Retrieve the top 5 students by average grade
     /// </summary>
-    [HttpGet("top_5_students_by_average")]
+    [HttpGet("top5StudentsByAverage")]
     public async Task<ActionResult<IEnumerable<StudentAverageGradeDto>>> GetTop5StudentsByAverage()
     {
         var topStudents = (from student in await studentRepository.GetAll()
@@ -96,7 +96,7 @@ public class QueryController(
     /// </summary>
     /// <param name="startDate">Start date of the period</param>
     /// <param name="endDate">End date of the period</param>
-    [HttpGet("students_with_max_average_by_period")]
+    [HttpGet("studentsWithMaxAverageByPeriod")]
     public async Task<ActionResult<IEnumerable<StudentAverageGradeDto>>> GetStudentsWithMaxAverageByPeriod(DateOnly startDate, DateOnly endDate)
     {
         var studentsWithAverages = (from student in await studentRepository.GetAll()
@@ -134,7 +134,7 @@ public class QueryController(
     /// <summary>
     /// Query 6: Retrieve information on the minimum, average, and maximum grade for each subject
     /// </summary>
-    [HttpGet("subject_grades_statistics")]
+    [HttpGet("subjectGradesStatistics")]
     public async Task<ActionResult<IEnumerable<SubjectGradeStatisticsDto>>> GetSubjectGradesStatistics()
     {
         var grades = await gradeRepository.GetAll();

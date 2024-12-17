@@ -5,10 +5,6 @@ namespace ElectronicDiary.WebApi.Client.Api;
 public class ElectronicDiaryApiWrapper(IConfiguration configuration) : IElectronicDiaryWrapper
 {
     private readonly ElectronicDiaryApi _client = new(configuration["OpenApi:ServerUrl"], new HttpClient());
-    private readonly ElectronicDiaryApi1 _client1 = new(configuration["OpenApi:ServerUrl"], new HttpClient());
-    private readonly ElectronicDiaryApi2 _client2 = new(configuration["OpenApi:ServerUrl"], new HttpClient());
-    private readonly ElectronicDiaryApi3 _client3 = new(configuration["OpenApi:ServerUrl"], new HttpClient());
-    private readonly ElectronicDiaryApi4 _client4 = new(configuration["OpenApi:ServerUrl"], new HttpClient());
 
     public async Task CreateStudent(StudentDto newStudent) => await _client.StudentPOSTAsync(newStudent);
     public async Task UpdateStudent(int id, StudentDto updatedStudent) => await _client.StudentPUTAsync(id, updatedStudent);
@@ -34,15 +30,15 @@ public class ElectronicDiaryApiWrapper(IConfiguration configuration) : IElectron
     public async Task<Grade> GetGrade(int id) => await _client.GradeGETAsync(id);
     public async Task<IEnumerable<Grade>> GetAllGrades() => await _client.GradeAllAsync();
 
-    public async Task<IEnumerable<Subject>> GetAllSubjectsQuery() => await _client1.SubjectsAsync();
-    public async Task<IEnumerable<Student>> GetStudentsInClass(int classId) => await _client2.ClassAsync(classId);
+    public async Task<IEnumerable<Subject>> GetAllSubjectsQuery() => await _client.AllSubjectsAsync();
+    public async Task<IEnumerable<Student>> GetStudentsInClass(int classId) => await _client.StudentsInClassAsync(classId);
     public async Task<IEnumerable<StudentGradesDto>> GetStudentsByDate(System.DateOnly date)
     {
         DateTime dt = date.ToDateTime(TimeOnly.MinValue);
         DateTimeOffset dto = new DateTimeOffset(dt, TimeSpan.Zero);
-        return await _client3.DateAsync(dto);
+        return await _client.StudentsByDateAsync(dto);
     }
-    public async Task<IEnumerable<StudentAverageGradeDto>> GetTop5StudentsByAverage() => await _client3.AverageAsync();
+    public async Task<IEnumerable<StudentAverageGradeDto>> GetTop5StudentsByAverage() => await _client.Top5StudentsByAverageAsync();
     public async Task<IEnumerable<StudentAverageGradeDto>> GetStudentsWithMaxAverageByPeriod(System.DateOnly startDate, System.DateOnly endDate)
     {
         DateTime sdt = startDate.ToDateTime(TimeOnly.MinValue);
@@ -51,7 +47,7 @@ public class ElectronicDiaryApiWrapper(IConfiguration configuration) : IElectron
         DateTime edt = endDate.ToDateTime(TimeOnly.MinValue);
         DateTimeOffset edto = new DateTimeOffset(edt, TimeSpan.Zero);
 
-        return await _client3.PeriodAsync(sdto, edto);
+        return await _client.Top5StudentsByAverageAsync(sdto, edto);
     }
-    public async Task<IEnumerable<SubjectGradeStatisticsDto>> GetSubjectGradesStatistics() => await _client4.StatisticsAsync();
+    public async Task<IEnumerable<SubjectGradeStatisticsDto>> GetSubjectGradesStatistics() => await _client.SubjectGradesStatisticsAsync();
 }
