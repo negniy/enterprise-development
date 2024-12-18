@@ -10,24 +10,28 @@
 
             <ModalBody>
                 <Field>
-                    <FieldLabel>ID предмета</FieldLabel>
-                    <NumericEdit @bind-Value="NewStudent.Name" />
+                    <FieldLabel>ID класса</FieldLabel>
+                    <NumericEdit @bind-Value="NewStudent.ClassId" />
                 </Field>
                 <Field>
-                    <FieldLabel>ID студента</FieldLabel>
-                    <NumericEdit @bind-Value="NewStudent.Surname" />
+                    <FieldLabel>Имя</FieldLabel>
+                    <InputText @bind-Value="NewStudent.Name" />
                 </Field>
                 <Field>
-                    <FieldLabel>Значение оценки</FieldLabel>
-                    <NumericEdit @bind-Value="NewStudent.Patronymic" />
+                    <FieldLabel>Фамилия</FieldLabel>
+                    <InputText @bind-Value="NewStudent.Surname" />
                 </Field>
                 <Field>
-                    <FieldLabel>Дата</FieldLabel>
+                    <FieldLabel>Отчество</FieldLabel>
+                    <InputText @bind-Value="NewStudent.Patronymic" />
+                </Field>
+                <Field>
+                    <FieldLabel>Дата рождения</FieldLabel>
                     <DateEdit @bind-Date="NewStudent.Birthday" />
                 </Field>
                 <Field>
-                    <FieldLabel>Дата</FieldLabel>
-                    <DateEdit @bind-Date="NewStudent.Passport" />
+                    <FieldLabel>Паспортные данные</FieldLabel>
+                    <InputText @bind-Value="NewStudent.Passport" />
                 </Field>
             </ModalBody>
 

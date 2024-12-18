@@ -34,20 +34,20 @@ public class ElectronicDiaryApiWrapper(IConfiguration configuration) : IElectron
     public async Task<IEnumerable<Student>> GetStudentsInClass(int classId) => await _client.StudentsInClassAsync(classId);
     public async Task<IEnumerable<StudentGradesDto>> GetStudentsByDate(System.DateOnly date)
     {
-        DateTime dt = date.ToDateTime(TimeOnly.MinValue);
-        DateTimeOffset dto = new DateTimeOffset(dt, TimeSpan.Zero);
+        var dt = date.ToDateTime(TimeOnly.MinValue);
+        var dto = new DateTimeOffset(dt, TimeSpan.Zero);
         return await _client.StudentsByDateAsync(dto);
     }
     public async Task<IEnumerable<StudentAverageGradeDto>> GetTop5StudentsByAverage() => await _client.Top5StudentsByAverageAsync();
     public async Task<IEnumerable<StudentAverageGradeDto>> GetStudentsWithMaxAverageByPeriod(System.DateOnly startDate, System.DateOnly endDate)
     {
-        DateTime sdt = startDate.ToDateTime(TimeOnly.MinValue);
-        DateTimeOffset sdto = new DateTimeOffset(sdt, TimeSpan.Zero);
+        var sdt = startDate.ToDateTime(TimeOnly.MinValue);
+        var sdto = new DateTimeOffset(sdt, TimeSpan.Zero);
 
-        DateTime edt = endDate.ToDateTime(TimeOnly.MinValue);
-        DateTimeOffset edto = new DateTimeOffset(edt, TimeSpan.Zero);
+        var edt = endDate.ToDateTime(TimeOnly.MinValue);
+        var edto = new DateTimeOffset(edt, TimeSpan.Zero);
 
-        return await _client.Top5StudentsByAverageAsync(sdto, edto);
+        return await _client.StudentsWithMaxAverageByPeriodAsync(sdto, edto);
     }
     public async Task<IEnumerable<SubjectGradeStatisticsDto>> GetSubjectGradesStatistics() => await _client.SubjectGradesStatisticsAsync();
 }

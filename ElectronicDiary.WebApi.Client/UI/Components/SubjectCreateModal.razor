@@ -4,18 +4,18 @@
     <ModalContent Centered>
         <Form>
             <ModalHeader>
-                <ModalTitle>Новыйц предмет</ModalTitle>
+                <ModalTitle>Новый предмет</ModalTitle>
                 <CloseButton Clicked="CloseSubjectModalAsync" />
             </ModalHeader>
 
             <ModalBody>
                 <Field>
                     <FieldLabel>Название предмета</FieldLabel>
-                    <NumericEdit @bind-Value="NewSubject.Name" />
+                    <InputText @bind-Value="NewSubject.Name" />
                 </Field>
                 <Field>
                     <FieldLabel>Год обучения</FieldLabel>
-                    <NumericEdit @bind-Value="NewSubject.StudyYear" />
+                    <InputText @bind-Value="NewSubject.StudyYear" />
                 </Field>
             </ModalBody>
 
