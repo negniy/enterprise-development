@@ -26,15 +26,15 @@
     <CardBody>
         <Field>
             <FieldLabel>Имя</FieldLabel>
-            <NumericEdit @bind-Value="Student.Name" />
+            <InputText @bind-Value="Student.Name" />
         </Field>
         <Field>
             <FieldLabel>Фамилия</FieldLabel>
-            <NumericEdit @bind-Value="Student.Surname" />
+            <InputText @bind-Value="Student.Surname" />
         </Field>
         <Field>
             <FieldLabel>Отчество</FieldLabel>
-            <NumericEdit @bind-Value="Student.Patronymic" />
+            <InputText @bind-Value="Student.Patronymic" />
         </Field>
         <Field>
             <FieldLabel>Id класса</FieldLabel>
@@ -42,11 +42,11 @@
         </Field>
         <Field>
             <FieldLabel>ДР</FieldLabel>
-            <NumericEdit @bind-Value="Student.Birthday" />
+            <DateEdit @bind-Date="Student.Birthday" />
         </Field>
         <Field>
             <FieldLabel>Паспорт</FieldLabel>
-            <NumericEdit @bind-Value="Student.Passport" />
+            <InputText @bind-Value="Student.Passport" />
         </Field>
     </CardBody>
 </Card>
